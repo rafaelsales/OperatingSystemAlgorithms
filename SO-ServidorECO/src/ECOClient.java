@@ -13,26 +13,36 @@ public class ECOClient {
 	public static void main(String[] args) {
 		try {
 			//Cria uma conexão via socket com o servidor de piadas:
+			Scanner scanner = new Scanner(System.in);
 			Socket socket = new Socket("127.0.0.1", 6014);
 			InputStream inputStream = socket.getInputStream();
 			OutputStream outputStream = socket.getOutputStream();
+			
+			System.out.println("Cliente do servidor ECO.");
+			System.out.println("Digite um texto e pressione ENTER para enviar e receber o ECO.");
+			System.out.println("Para encerrar pressione ENTER com a linha vazia.");
+			System.out.println("---");
 
-			System.out.print("Digite algo para enviar ao servidor ECO: ");
-			Scanner scanner = new Scanner(System.in);
-			byte[] dados = scanner.nextLine().getBytes();
-			
-			for (byte b : dados) {
-				outputStream.write(b);
+			while (true) {
+				System.out.print("Digite um texto (vazio para encerrar): ");
+				String line = scanner.nextLine();
+				if (line.isEmpty()) {
+					break;
+				}
+				byte[] dados = line.getBytes();
+				
+				for (byte b : dados) {
+					outputStream.write(b);
+				}
+				outputStream.write(-1);
+				
+				byte readByte;
+				ByteArrayOutputStream readBytes = new ByteArrayOutputStream();
+				while ((readByte = (byte) inputStream.read()) != -1) {
+					readBytes.write(readByte);
+				}
+				System.out.println("ECO: " + new String(readBytes.toByteArray()));
 			}
-			outputStream.write(-1);
-			
-			byte readByte;
-			ByteArrayOutputStream readBytes = new ByteArrayOutputStream();
-			while ((readByte = (byte) inputStream.read()) != -1) {
-				readBytes.write(readByte);
-			}
-			System.out.println("ECO: " + new String(readBytes.toByteArray()));
-			
 			socket.close();
 		} catch (IOException ioe) {
 			System.err.println(ioe);
