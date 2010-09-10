@@ -1,0 +1,6 @@
+Para executar o programa siga os passos abaixo:
+1) Abra o prompt de comando
+2) Acesse no diretório ...\Fibonacci\Release
+3) Digite o comando: Fibonacci.exe <quantidade desejada de elementos da sequência de fibonacci>
+Exemplo: Fibonacci.exe 5
+4) Pressione ENTER.
