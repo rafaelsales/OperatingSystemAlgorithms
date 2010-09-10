@@ -10,7 +10,7 @@ import java.util.Random;
 
 /**
  * Servidor de piadas
- * @author rafael
+ * @author Rafael de Castro Dantas Sales - rafaelcds@gmail.com
  */
 public class PiadasServer {
 	
