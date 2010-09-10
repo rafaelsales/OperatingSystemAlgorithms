@@ -15,6 +15,7 @@ import java.util.Random;
 public class PiadasServer {
 	
 	public static void main(String[] args) {
+		System.out.println("Servidor de Piadas");
 		try {
 			List<String> piadas = obterPiadas();
 			Random random = new Random();
@@ -22,12 +23,20 @@ public class PiadasServer {
 			ServerSocket serverSocket = new ServerSocket(6013);
 			
 			while (true) {
+				System.out.println("Aguardando conexão de cliente.");
 				Socket client = serverSocket.accept();
-				PrintWriter printOut = new PrintWriter(client.getOutputStream(), true);
-				//Envia uma piada aleatória:
-				printOut.println(piadas.get(random.nextInt(piadas.size())));
-
-				client.close();
+				System.out.println("Cliente " + client.getInetAddress().getHostAddress() + " conectado.");
+				
+				try {
+					PrintWriter printOut = new PrintWriter(client.getOutputStream(), true);
+					//Envia uma piada aleatória:
+					printOut.println(piadas.get(random.nextInt(piadas.size())));
+					System.out.println("Piada enviada com sucesso");
+					
+					client.close();
+				} catch (Exception e) {
+					System.out.println("Ocorreu um erro inesperado durante a conexão com o cliente " + client.getInetAddress().getHostAddress());
+				}
 			}
 		} catch (Exception ioe) {
 			System.err.println(ioe);
