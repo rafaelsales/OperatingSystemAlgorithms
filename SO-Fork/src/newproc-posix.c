@@ -1,37 +1,31 @@
-/**
- * This program forks a separate process using the fork()/exec() system calls.
- *
- * Figure 3.10
- *
- * @author Gagne, Galvin, Silberschatz
- * Operating System Concepts  - Seventh Edition
- * Copyright John Wiley & Sons - 2005.
- */
-
 #include <stdio.h>
-#include <unistd.h>
-#include <sys/types.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
-int main() {
+int main(int argc, char **argv) {
+	if (argc != 2) {
+		printf("%s", "Número de parametros inválido!\n");
+		return -1;
+	}
+
 	pid_t pid;
 
 	/* fork a child process */
 	pid = fork();
 
-	if (pid < 0) { /* error occurred */
-		fprintf(stderr, "Fork Failed\n");
+	if (pid < 0) {
+		fprintf(stderr, "Fork falhou!\n");
 		exit(-1);
-	} else if (pid == 0) { /* child process */
-		printf("I am the child %d\n", pid);
-		execlp("/bin/ls", "ls", NULL);
-	} else { /* parent process */
+	} else if (pid == 0) {
+		execlp("./Release/Fibonacci", "Fibonacci", argv[1], NULL);
+	} else {
 		/* parent will wait for the child to complete */
-		printf("I am the parent %d\n", pid);
 		wait(NULL);
-
-		printf("Child Complete\n");
+		printf("Child completo\n");
 		exit(0);
 	}
+
 	return 0;
 }
+
