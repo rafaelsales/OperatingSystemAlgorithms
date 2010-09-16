@@ -8,9 +8,8 @@ public class DateServer {
 
 			// now listen for connections
 			while (true) {
-				System.out.println("Waiting for a new connection...");
+				System.out.println("Aguardando uma nova conexão...");
 				Socket clientSocket = serverSocket.accept();
-				System.out.println("Client " + clientSocket.getInetAddress().getHostAddress() + " connected.");
 				// we have a connection
 
 				// Handles the client request in a new thread:
@@ -32,13 +31,14 @@ public class DateServer {
 		@Override
 		public void run() {
 			try {
+				System.out.println("Cliente " + clientSocket.getInetAddress().getHostAddress() + " conectado.");
 				PrintWriter printWriter = new PrintWriter(clientSocket.getOutputStream(), true);
 				// write the Date to the socket
 				printWriter.println(new java.util.Date().toString());
 
 				// close the socket and resume listening for more connections
 				clientSocket.close();
-				System.out.println("Client " + clientSocket.getInetAddress().getHostAddress() + " disconnected.");
+				System.out.println("Cliente " + clientSocket.getInetAddress().getHostAddress() + " desconectado.");
 			} catch (IOException e) {
 				System.err.println(e);
 			}
