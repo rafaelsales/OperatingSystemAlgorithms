@@ -1,26 +1,25 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
 
-long gerarFibonacci(long n);
+int gerarFibonacci(int n);
 DWORD WINAPI geradorFibonacci(PVOID param);
 
-long *fibonacciBuffer;
-long tamanhoBuffer = 0;
+int *fibonacciBuffer; //Array para armazenar elementos da serie de Fibonacci ja calculados
+int tamanhoBuffer; //Quantidade de elementos da serie de Fibonacci ja calculados
 
 int main(void) {
-	long limite;
-	puts("--- Gerador de números da sequência de Fibonacci ---");
+	int limite;
+	puts("--- Gerador de numeros da sequencia de Fibonacci ---");
 	do {
-		printf("Informe o limite da sequência: ");
-		scanf("%ld", &limite);
+		printf("Informe o limite da sequencia: ");
+		scanf("%d", &limite);
 		if (limite <= 0) {
 			puts("O limite deve ser maior que 0.");
 		}
 	} while (limite <= 0);
 
-	fibonacciBuffer = calloc(limite, sizeof(long));
+	fibonacciBuffer = (int *) calloc(limite, sizeof(int));
 	tamanhoBuffer = 0;
 
 	DWORD threadId;
@@ -36,22 +35,25 @@ int main(void) {
 	if (threadHandle != NULL) {
 		WaitForSingleObject(threadHandle, INFINITE);
 		CloseHandle(threadHandle);
-		long i;
-		printf("Números da sequência: ");
-		for (i = 0; i < limite; i++) {
-			printf("%ld " + fibonacciBuffer[i]);
+
+		printf("%d primeiros numeros da sequencia de Fibonacci:\n", limite);
+		int i;
+		for (i = 0; i < tamanhoBuffer; i++) {
+			printf("%d ", fibonacciBuffer[i]);
 		}
+	} else {
+		puts("Ocorreu um erro inesperado durante a criacao da thread.");
 	}
 
 	return EXIT_SUCCESS;
 }
 
-long gerarFibonacci(long n) {
+int gerarFibonacci(int n) {
 	//Se o n-ésimo número da série já estiver no buffer, retorna o valor do buffer:
 	if (n < tamanhoBuffer) {
 		return fibonacciBuffer[n];
 	}
-	long valor;
+	int valor;
 	if (n == 0) {
 		valor = 0;
 	} else if (n == 1) {
@@ -59,15 +61,13 @@ long gerarFibonacci(long n) {
 	} else {
 		valor = gerarFibonacci(n - 1) + gerarFibonacci(n - 2);
 	}
-	fibonacciBuffer[tamanhoBuffer++] = valor;
+	fibonacciBuffer[n] = valor;
+	tamanhoBuffer++;
 	return valor;
 }
 
 DWORD WINAPI geradorFibonacci(PVOID param) {
-	long limite = *(long*) param;
-	long i;
-	for (i = 0; i < limite; i++) {
-		gerarFibonacci(i);
-	}
-	return 0;
+	int limite = *(int*) param;
+	gerarFibonacci(limite);
+	return (DWORD) 0;
 }
