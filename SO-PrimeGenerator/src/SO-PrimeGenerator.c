@@ -13,7 +13,7 @@
 #include <pthread.h>
 
 //Função executada pela thread:
-void *generatePrimes(long limite);
+void *generatePrimes(long* limite);
 
 int main(void) {
 	long limite;
@@ -30,14 +30,15 @@ int main(void) {
 	pthread_attr_init(&threadAttributes);
 
 	pthread_t thread;
-	pthread_create(&thread, &threadAttributes, (void *(*) (void *)) generatePrimes, (void *) limite);
+	pthread_create(&thread, &threadAttributes, (void *(*) (void *)) generatePrimes, (void *) &limite);
 
 	pthread_join(thread, NULL);
 
 	return EXIT_SUCCESS;
 }
 
-void *generatePrimes(long limite) {
+void *generatePrimes(long* limitePtr) {
+	long limite = *limitePtr;
 	long i;
 	printf("Números primos até %ld: ", limite);
 	for (i = 2; i <= limite; ++i) {
