@@ -1,6 +1,6 @@
 Para executar o programa siga os passos abaixo:
 1) Abra o prompt de comando
-2) Acesse no diretório ...\SO-CreateProcessWin32\Release
-3) Digite o comando: SO-CreateProcessWin32.exe <quantidade desejada de elementos da sequência de fibonacci>
-Exemplo: SO-CreateProcessWin32.exe 5
+2) Acesse no diretório .../SO-Fork/Release
+3) Digite o comando: ./SO-Fork <quantidade desejada de elementos da sequência de fibonacci>
+Exemplo: ./SO-Fork 5
 4) Pressione ENTER.
