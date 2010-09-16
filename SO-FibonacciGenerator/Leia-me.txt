@@ -1,0 +1,5 @@
+Para executar o programa siga os passos abaixo:
+1) Abra o prompt de comando
+2) Acesse no diretorio ...\SO-FibonacciGenerator\Release
+3) Digite o comando: SO-FibonacciGenerator.exe
+4) Pressione ENTER.
