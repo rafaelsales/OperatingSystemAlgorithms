@@ -19,7 +19,6 @@ void *generatePrimes(long limite) {
 		long j;
 		int isPrimo = 1;
 		for (j = 2; j <= i / 2; ++j) {
-//			printf("%ld ", j);
 			if (i % j == 0) {
 				isPrimo = 0;
 				break;
