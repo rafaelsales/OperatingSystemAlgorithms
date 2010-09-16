@@ -12,24 +12,8 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-void *generatePrimes(long limite) {
-	long i;
-	printf("Números primos até %ld: ", limite);
-	for (i = 2; i <= limite; ++i) {
-		long j;
-		int isPrimo = 1;
-		for (j = 2; j <= i / 2; ++j) {
-			if (i % j == 0) {
-				isPrimo = 0;
-				break;
-			}
-		}
-		if (isPrimo) {
-			printf("%ld ", i);
-		}
-	}
-	return NULL;
-}
+//Função executada pela thread:
+void *generatePrimes(long limite);
 
 int main(void) {
 	long limite;
@@ -51,4 +35,23 @@ int main(void) {
 	pthread_join(thread, NULL);
 
 	return EXIT_SUCCESS;
+}
+
+void *generatePrimes(long limite) {
+	long i;
+	printf("Números primos até %ld: ", limite);
+	for (i = 2; i <= limite; ++i) {
+		long j;
+		int isPrimo = 1;
+		for (j = 2; j <= i / 2; ++j) {
+			if (i % j == 0) {
+				isPrimo = 0;
+				break;
+			}
+		}
+		if (isPrimo) {
+			printf("%ld ", i);
+		}
+	}
+	return NULL;
 }
