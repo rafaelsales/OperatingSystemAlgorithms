@@ -39,8 +39,8 @@ public class Optimal extends ReplacementAlgorithm {
 				break;
 			}
 		}
-		int replacedPageNumber = frames[indexLastFrameFound];
+		int replacedPageIndex = indexLastFrameFound;
 		frames[indexLastFrameFound] = pageNumber;
-		return replacedPageNumber;
+		return replacedPageIndex;
 	}
 }

@@ -25,13 +25,13 @@ public class MFU extends ReplacementAlgorithm {
 		}
 
 		// Substitui a página mais referenciada pela nova página referenciada:
-		int replacedPageNumber = frames[frameIndexOfMFUPage];
+		int replacedPageIndex = frameIndexOfMFUPage;
 		frames[frameIndexOfMFUPage] = pageNumber;
 
 		// Define o contador de referencias da nova página para 1:
 		framesReferenceCounters[frameIndexOfMFUPage] = 1;
 
-		return replacedPageNumber;
+		return replacedPageIndex;
 	}
 
 }

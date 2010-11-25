@@ -31,12 +31,12 @@ public class LRU extends ReplacementAlgorithm {
 		} else {
 			// Obtém o índice da página a ser substituída, isto é, o índice da base da pilha (equivalente ao novo topo):
 			stackTopIndex = (stackTopIndex + 1) % pageFrameSize;
-			int replacedPageNumber = frames[stackTopIndex];
+			int replacedPageIndex = stackTopIndex;
 	
 			// Adiciona a nova página referenciada no topo da pilha:
 			frames[stackTopIndex] = pageNumber;
 	
-			return replacedPageNumber;
+			return replacedPageIndex;
 		}
 	}
 

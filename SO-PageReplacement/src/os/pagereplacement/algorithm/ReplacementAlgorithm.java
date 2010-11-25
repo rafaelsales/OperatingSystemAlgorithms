@@ -25,6 +25,10 @@ public abstract class ReplacementAlgorithm {
 		return pageFaultCount;
 	}
 
+	public int[] getFrames() {
+		return frames;
+	}
+
 	public abstract int insert(int pageNumber);
 
 	/**

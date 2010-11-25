@@ -25,13 +25,13 @@ public class LFU extends ReplacementAlgorithm {
 		}
 
 		// Substitui a página menos referenciada pela nova página referenciada:
-		int replacedPageNumber = frames[frameIndexOfLRUPage];
+		int replacedPageIndex = frameIndexOfLRUPage;
 		frames[frameIndexOfLRUPage] = pageNumber;
 
 		// Define o contador de referencias da nova página para 1:
 		framesReferenceCounters[frameIndexOfLRUPage] = 1;
 
-		return replacedPageNumber;
+		return replacedPageIndex;
 	}
 
 }

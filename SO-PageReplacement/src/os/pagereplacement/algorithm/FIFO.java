@@ -14,10 +14,10 @@ public class FIFO extends ReplacementAlgorithm {
 		if (tryBasicInsert(pageNumber)) {
 			return -1;
 		}
-		int replacedPageNumber = frames[fifoHeadIndex];
+		int replacedPageIndex = fifoHeadIndex;
 		frames[fifoHeadIndex] = pageNumber;
 		fifoHeadIndex = (fifoHeadIndex + 1) % pageFrameSize;
-		return replacedPageNumber;
+		return replacedPageIndex;
 	}
-
+	
 }
