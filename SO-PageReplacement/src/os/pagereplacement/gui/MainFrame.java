@@ -1,9 +1,6 @@
 package os.pagereplacement.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -18,13 +15,17 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
+import os.pagereplacement.PageGenerator;
+
 public class MainFrame extends JFrame {	
 	
 	private JTextField jtfReferenceStringSize;
 	private JTextField jtfbFramesCount;
-	private JButton jbtSingleStep;
+	
+	private JButton jbtGenerateReferenceString;
 	private JButton jbtPlay;
 	private JButton jbtPause;
+	private JButton jbtSingleStep;
 	private JButton jbtStop;
 	
 	public MainFrame() {
@@ -54,14 +55,17 @@ public class MainFrame extends JFrame {
 		jtfReferenceStringSize = new JTextField("500", 15);
 		jtfbFramesCount = new JTextField("100", 15);
 		
-		jbtSingleStep = new JButton("1 Step");
-		jbtSingleStep.addActionListener(buttonsActionListener);
+		jbtGenerateReferenceString = new JButton("Generate Reference String");
+		jbtGenerateReferenceString.addActionListener(buttonsActionListener);
 		
 		jbtPlay = new JButton("Play");
 		jbtPlay.addActionListener(buttonsActionListener);
 		
 		jbtPause = new JButton("Pause");
 		jbtPause.addActionListener(buttonsActionListener);
+
+		jbtSingleStep = new JButton("1 Step");
+		jbtSingleStep.addActionListener(buttonsActionListener);
 		
 		jbtStop = new JButton("Stop");
 		jbtStop.addActionListener(buttonsActionListener);
@@ -92,6 +96,22 @@ public class MainFrame extends JFrame {
 		JPanel jpnAlgorithmsPanel = new JPanel();
 		
 		return jpnAlgorithmsPanel;
+	}
+	
+	private void play() {
+//		PageGenerator pageGenerator = new PageGenerator(new Integer(args[0]).intValue());
+	}
+	
+	private void pause() {
+		
+	}
+	
+	private void doSingleStep() {
+		
+	}
+	
+	private void stop() {
+
 	}
 
 	private void initPageReplacement() {
@@ -133,11 +153,13 @@ public class MainFrame extends JFrame {
 	private ActionListener buttonsActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (jbtSingleStep == e.getSource()) {
+			if (jbtGenerateReferenceString == e.getSource()) {
 				
 			} else if (jbtPlay == e.getSource()) {
 				
 			} else if (jbtPause == e.getSource()) {
+				
+			} else if (jbtSingleStep == e.getSource()) {
 				
 			} else if (jbtStop == e.getSource()) {
 			}
