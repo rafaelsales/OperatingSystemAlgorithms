@@ -5,7 +5,7 @@ public class FIFO extends ReplacementAlgorithm {
 	private int fifoHeadIndex;
 
 	public FIFO(int pageFrameSize) {
-		super(pageFrameSize);
+		super(pageFrameSize, "FIFO");
 		fifoHeadIndex = 0;
 	}
 

@@ -5,7 +5,7 @@ public class LRU extends ReplacementAlgorithm {
 	private int stackTopIndex;
 
 	public LRU(int pageFrameSize) {
-		super(pageFrameSize);
+		super(pageFrameSize, "LRU");
 		stackTopIndex = 0;
 	}
 

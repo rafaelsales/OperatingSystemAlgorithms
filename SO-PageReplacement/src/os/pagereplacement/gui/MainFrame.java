@@ -5,10 +5,15 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -16,17 +21,25 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 import os.pagereplacement.PageGenerator;
+import os.pagereplacement.algorithm.FIFO;
+import os.pagereplacement.algorithm.LFU;
+import os.pagereplacement.algorithm.LRU;
+import os.pagereplacement.algorithm.MFU;
+import os.pagereplacement.algorithm.Optimal;
+import os.pagereplacement.algorithm.ReplacementAlgorithm;
 
 public class MainFrame extends JFrame {	
 	
 	private JTextField jtfReferenceStringSize;
-	private JTextField jtfbFramesCount;
+	private JTextField jtfFramesNumber;
 	
-	private JButton jbtGenerateReferenceString;
+	private JButton jbtSetup;
 	private JButton jbtPlay;
 	private JButton jbtPause;
 	private JButton jbtSingleStep;
 	private JButton jbtStop;
+	
+	private List<AlgorithmPanel> algorithms;
 	
 	public MainFrame() {
 		super("Page Replacement");
@@ -44,19 +57,18 @@ public class MainFrame extends JFrame {
 		jpnMainPanel.setBorder(new EmptyBorder(new Insets(4, 6, 4, 6)));
 		jpnMainPanel.setLayout(new BorderLayout());
 		
-		jpnMainPanel.add(createControlPanel(), BorderLayout.NORTH);
-		jpnMainPanel.add(createAlgorithmsPanel(), BorderLayout.SOUTH);
+		add(createControlPanel(), BorderLayout.NORTH);
 	}
 
 	private JPanel createControlPanel() {
 		JLabel jlbReferenceStringSize = new JLabel("Reference String Size:");
-		JLabel jlbFrameCount = new JLabel("Frame count:");;
+		JLabel jlbNumberFrame = new JLabel("Frame count:");;
 		
 		jtfReferenceStringSize = new JTextField("500", 15);
-		jtfbFramesCount = new JTextField("100", 15);
+		jtfFramesNumber = new JTextField("100", 15);
 		
-		jbtGenerateReferenceString = new JButton("Generate Reference String");
-		jbtGenerateReferenceString.addActionListener(buttonsActionListener);
+		jbtSetup = new JButton("Setup");
+		jbtSetup.addActionListener(buttonsActionListener);
 		
 		jbtPlay = new JButton("Play");
 		jbtPlay.addActionListener(buttonsActionListener);
@@ -73,9 +85,9 @@ public class MainFrame extends JFrame {
 		//Cria o panel dos campos:
 		JPanel jpnFields = new JPanel(new GridLayout(2, 2, 4, 2));
 		jpnFields.add(jlbReferenceStringSize);
-		jpnFields.add(jlbFrameCount);
+		jpnFields.add(jlbNumberFrame);
 		jpnFields.add(jtfReferenceStringSize);
-		jpnFields.add(jtfbFramesCount);
+		jpnFields.add(jtfFramesNumber);
 		
 		//Cria o panel dos botões:
 		JPanel jpnButtons = new JPanel(new GridLayout(1, 4, 4, 2));
@@ -92,10 +104,37 @@ public class MainFrame extends JFrame {
 		return jpnControlPanel;
 	}
 	
-	private JPanel createAlgorithmsPanel() {
-		JPanel jpnAlgorithmsPanel = new JPanel();
+	private void setup() {
+		int referenceStringSize;
+		int framesNumber;
+		try {
+			referenceStringSize = Integer.parseInt(jtfReferenceStringSize.getText());			
+		} catch (Exception e) {
+			showErrorDialog("Enter a valid reference string size", true);
+			return;
+		}
+		try {
+			framesNumber = Integer.parseInt(jtfFramesNumber.getText());			
+		} catch (Exception e) {
+			showErrorDialog("Enter a valid number of frames", true);
+			return;
+		}
 		
-		return jpnAlgorithmsPanel;
+		PageGenerator pageGenerator = new PageGenerator(referenceStringSize);
+		int[] referenceString = pageGenerator.getReferenceString();
+		
+		algorithms = new ArrayList<AlgorithmPanel>();
+		algorithms.add(new AlgorithmPanel(new FIFO(framesNumber)));
+		algorithms.add(new AlgorithmPanel(new LRU(framesNumber)));
+		algorithms.add(new AlgorithmPanel(new LFU(framesNumber)));
+		algorithms.add(new AlgorithmPanel(new MFU(framesNumber)));
+		algorithms.add(new AlgorithmPanel(new Optimal(framesNumber, referenceString)));
+		
+		JPanel jpnAlgorithmsPanel = new JPanel(new GridLayout(algorithms.size(), 1));
+		for (AlgorithmPanel algorithmPanel : algorithms) {
+			jpnAlgorithmsPanel.add(algorithmPanel);
+		}
+		add(jpnAlgorithmsPanel, BorderLayout.SOUTH);
 	}
 	
 	private void play() {
@@ -112,6 +151,11 @@ public class MainFrame extends JFrame {
 	
 	private void stop() {
 
+	}
+	
+	private void showErrorDialog(String message, boolean error) {
+		int messageType = error ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE;
+		JOptionPane.showMessageDialog(this, message, getTitle(), messageType);
 	}
 
 	private void initPageReplacement() {
@@ -153,7 +197,7 @@ public class MainFrame extends JFrame {
 	private ActionListener buttonsActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (jbtGenerateReferenceString == e.getSource()) {
+			if (jbtSetup == e.getSource()) {
 				
 			} else if (jbtPlay == e.getSource()) {
 				

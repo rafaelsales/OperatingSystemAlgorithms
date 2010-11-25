@@ -2,13 +2,17 @@ package os.pagereplacement.gui;
 
 import javax.swing.JPanel;
 
+import os.pagereplacement.algorithm.ReplacementAlgorithm;
+
 public class AlgorithmPanel extends JPanel {
 	
-	public AlgorithmPanel() {
-		
+	private final ReplacementAlgorithm replacementAlgorithm;
+
+	public AlgorithmPanel(ReplacementAlgorithm replacementAlgorithm) {
+		this.replacementAlgorithm = replacementAlgorithm;		
 	}
-	
-	public void insert(int frameTarget, int newPageNumber, int oldPageNumber) {
+
+	public void insert() {
 
 	}
 }

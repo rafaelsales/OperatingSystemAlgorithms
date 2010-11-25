@@ -5,7 +5,7 @@ public class LFU extends ReplacementAlgorithm {
 	private int[] framesReferenceCounters;
 
 	public LFU(int pageFrameSize) {
-		super(pageFrameSize);
+		super(pageFrameSize, "LFU");
 		framesReferenceCounters = new int[pageFrameSize];
 	}
 

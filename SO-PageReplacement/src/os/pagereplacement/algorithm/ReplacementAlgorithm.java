@@ -6,11 +6,14 @@ public abstract class ReplacementAlgorithm {
 
 	public static final int EMPTY_FRAME_VALUE = -1;
 
+	private final String name;
 	protected int pageFaultCount;
 	protected int pageFrameSize;
 	protected int[] frames;
 
-	public ReplacementAlgorithm(int pageFrameSize) {
+
+	public ReplacementAlgorithm(int pageFrameSize, String name) {
+		this.name = name;
 		if (pageFrameSize <= 0) {
 			throw new IllegalArgumentException();
 		}
@@ -90,5 +93,9 @@ public abstract class ReplacementAlgorithm {
 			return true;
 		}
 		return false;
+	}
+
+	public String getName() {
+		return name;
 	}
 }

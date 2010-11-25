@@ -5,7 +5,7 @@ public class Optimal extends ReplacementAlgorithm {
 	private final int[] pageReferenceString;
 
 	public Optimal(int pageFrameSize, int[] pageReferenceString) {
-		super(pageFrameSize);
+		super(pageFrameSize, "Optimal");
 		this.pageReferenceString = pageReferenceString;
 	}
 

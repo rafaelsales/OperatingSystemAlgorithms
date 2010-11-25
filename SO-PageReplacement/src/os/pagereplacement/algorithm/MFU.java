@@ -5,7 +5,7 @@ public class MFU extends ReplacementAlgorithm {
 	private int[] framesReferenceCounters;
 
 	public MFU(int pageFrameSize) {
-		super(pageFrameSize);
+		super(pageFrameSize, "MFU");
 		framesReferenceCounters = new int[pageFrameSize];
 	}
 
