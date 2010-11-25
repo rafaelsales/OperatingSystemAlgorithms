@@ -4,16 +4,19 @@ import java.util.Arrays;
 
 public abstract class ReplacementAlgorithm {
 
+	public static final int EMPTY_FRAME_VALUE = -1;
+
 	protected int pageFaultCount;
-	protected int pageFrameCount;
+	protected int pageFrameSize;
 	protected int[] frames;
 
 	public ReplacementAlgorithm(int pageFrameSize) {
-		if (pageFrameSize < 0) {
+		if (pageFrameSize <= 0) {
 			throw new IllegalArgumentException();
 		}
-		this.pageFrameCount = pageFrameSize;
+		this.pageFrameSize = pageFrameSize;
 		this.pageFaultCount = 0;
+
 		frames = new int[pageFrameSize];
 		Arrays.fill(frames, -1);
 	}
@@ -21,20 +24,44 @@ public abstract class ReplacementAlgorithm {
 	public int getPageFaultCount() {
 		return pageFaultCount;
 	}
-	
-	public abstract void insert(int pageNumber);
-	
-	protected boolean pageIsAlreadyInFrame(int pageNumber) {
-		for (int frame : frames) {
-			if (pageNumber == frame) {
-				return true;
-			}
+
+	public abstract int insert(int pageNumber);
+
+	/**
+	 * Se a página ainda não estiver em um frame, incrementa o número de page faults e tenta inserir a página em um frame vazio, se houver
+	 * 
+	 * @param pageNumber
+	 * @return true se a página já estiver em um frame ou se a inserção em um frame vazio ocorreu com sucesso; false caso contrário
+	 */
+	protected boolean tryBasicInsert(int pageNumber) {
+		if (getPageFrameIndex(pageNumber) != -1) {
+			return true;
+		}
+		pageFaultCount++;
+		if (tryInsertFreeFrame(pageNumber)) {
+			return true;
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Finds a free frame
+	 * Obtém o índice de uma página no vetor de frames, caso esteja nele.
+	 * 
+	 * @param pageNumber
+	 * @return índice da página ou -1 caso a página não esteja no vetor de frames
+	 */
+	protected int getPageFrameIndex(int pageNumber) {
+		for (int i = 0; i < frames.length; i++) {
+			if (pageNumber == frames[i]) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	/**
+	 * Procura um frame livre
+	 * 
 	 * @return índice de um frame livre ou -1 (caso não exista frame livre)
 	 */
 	protected int findFreeFrameIndex() {
@@ -45,11 +72,12 @@ public abstract class ReplacementAlgorithm {
 		}
 		return -1;
 	}
-	
+
 	/**
-	 * Insert the page in a free frame ONLY if it's available
+	 * Insere a página em um frame livre, caso exista
+	 * 
 	 * @param pageNumber
-	 * @return true if the page has been inserted in a free frame successfully; false otherwise
+	 * @return true se a página foi inserida; false caso contrário
 	 */
 	protected boolean tryInsertFreeFrame(int pageNumber) {
 		int freeFrameIndex = findFreeFrameIndex();

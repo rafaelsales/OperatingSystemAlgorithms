@@ -1,16 +1,14 @@
 package os.pagereplacement;
+
 /**
  * This class generates page references ranging from 0 .. 9
- *
- * Usage:
- *	PageGenerator gen = new PageGenerator()
- *	int[] ref = gen.getReferenceString();
+ * 
+ * Usage: PageGenerator gen = new PageGenerator() int[] ref = gen.getReferenceString();
  */
 
-public class PageGenerator
-{
+public class PageGenerator {
 	private static final int DEFAULT_SIZE = 100;
-	private static final int RANGE = 9;
+	private static final int RANGE = 999;
 
 	int[] referenceString;
 

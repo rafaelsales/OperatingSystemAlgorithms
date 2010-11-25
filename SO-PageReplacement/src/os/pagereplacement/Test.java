@@ -1,4 +1,5 @@
 package os.pagereplacement;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,13 +12,11 @@ import os.pagereplacement.algorithm.ReplacementAlgorithm;
 
 /**
  * Test harness for LRU and FIFO page replacement algorithms
- *
- * Usage:
- *	java [-Ddebug] Test <reference string size> <number of page frames>
+ * 
+ * Usage: java [-Ddebug] Test <reference string size> <number of page frames>
  */
 
-public class Test
-{
+public class Test {
 	public static void main(String[] args) {
 		PageGenerator pageGenerator = new PageGenerator(new Integer(args[0]).intValue());
 
@@ -46,7 +45,7 @@ public class Test
 			}
 		}
 
-//		// report the total number of page faults
+		// report the total number of page faults
 		System.out.println("LRU faults = " + lru.getPageFaultCount());
 		System.out.println("FIFO faults = " + fifo.getPageFaultCount());
 		System.out.println("LFU faults = " + lfu.getPageFaultCount());

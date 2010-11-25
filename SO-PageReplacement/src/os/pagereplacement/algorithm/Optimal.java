@@ -8,24 +8,21 @@ public class Optimal extends ReplacementAlgorithm {
 		super(pageFrameSize);
 		this.pageReferenceString = pageReferenceString;
 	}
-	
+
 	@Override
-	public void insert(int referencedPageIndex) {
+	public int insert(int referencedPageIndex) {
 		int pageNumber = pageReferenceString[referencedPageIndex];
-		if (pageIsAlreadyInFrame(pageNumber)) {
-			return;
+		if (tryBasicInsert(pageNumber)) {
+			return -1;
 		}
-		pageFaultCount++;
-		if (tryInsertFreeFrame(pageNumber)) {
-			return;
-		}
-		//Se for a última referência
+
 		int[] frameCopy = frames.clone();
-		int indexLastFrameFound = 0; //Elege o 1o frame para substituição caso não nenhum frame será referenciado adiante
+		int indexLastFrameFound = 0; // Elege o 1o frame para substituição caso não nenhum frame será referenciado adiante
 		int framesFoundCount = 0;
-		//Procura pela página que será referenciada o mais adiante possível:
+
+		// Procura pela página que será referenciada o mais adiante possível:
 		for (int i = referencedPageIndex + 1; i < pageReferenceString.length; i++) {
-			//Verifica se a página está em algum frame:
+			// Verifica se a página está em algum frame:
 			for (int j = 0; j < frameCopy.length; j++) {
 				if (pageReferenceString[i] == frameCopy[j]) {
 					framesFoundCount++;
@@ -34,12 +31,16 @@ public class Optimal extends ReplacementAlgorithm {
 					break;
 				}
 			}
-			if (framesFoundCount == pageFrameCount) {
+
+			/*
+			 * Pára a análise do vetor de referencias caso todos os frames da memória já tiverem sido analisados:
+			 */
+			if (framesFoundCount == pageFrameSize) {
 				break;
 			}
 		}
+		int replacedPageNumber = frames[indexLastFrameFound];
 		frames[indexLastFrameFound] = pageNumber;
+		return replacedPageNumber;
 	}
-
-
 }
