@@ -98,4 +98,8 @@ public abstract class ReplacementAlgorithm {
 	public String getName() {
 		return name;
 	}
+
+	public void reset() {
+		
+	}
 }
