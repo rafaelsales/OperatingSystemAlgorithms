@@ -11,9 +11,10 @@ public class MFU extends ReplacementAlgorithm {
 
 	@Override
 	public int insert(int pageNumber) {
-		if (tryBasicInsert(pageNumber)) {
-			framesReferenceCounters[getPageFrameIndex(pageNumber)]++;
-			return -1;
+		int frameIndex = tryBasicInsert(pageNumber);
+		if (frameIndex != -1) {
+			framesReferenceCounters[frameIndex]++;
+			return frameIndex;
 		}
 
 		// Obtém o índice da página que foi referenciada mais vezes:
@@ -25,13 +26,13 @@ public class MFU extends ReplacementAlgorithm {
 		}
 
 		// Substitui a página mais referenciada pela nova página referenciada:
-		int replacedPageIndex = frameIndexOfMFUPage;
+		int replacedFrameIndex = frameIndexOfMFUPage;
 		frames[frameIndexOfMFUPage] = pageNumber;
 
 		// Define o contador de referencias da nova página para 1:
 		framesReferenceCounters[frameIndexOfMFUPage] = 1;
 
-		return replacedPageIndex;
+		return replacedFrameIndex;
 	}
 
 }

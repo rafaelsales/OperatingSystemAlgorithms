@@ -1,6 +1,9 @@
 package os.pagereplacement.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -13,12 +16,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import os.pagereplacement.PageGenerator;
 import os.pagereplacement.algorithm.FIFO;
@@ -28,15 +35,20 @@ import os.pagereplacement.algorithm.MFU;
 import os.pagereplacement.algorithm.Optimal;
 import os.pagereplacement.algorithm.ReplacementAlgorithm;
 
+@SuppressWarnings("serial")
 public class MainFrame extends JFrame {	
 	
 	private enum ExecutionState {
 		SETUP, READY, PLAY, END
 	}
 	
+	private static final int ALGORITHMS_COUNT = 5;
+	
 	private JTextField jtfReferenceStringSize;
 	private JTextField jtfFramesNumber;
 	private JTextField jtfPlayStepInterval;
+	private JTextField jtfInsertedPage;
+	private JTextField jtfInsertedPageIndex;
 	
 	private JToggleButton jbtSetup;
 	private JButton jbtPlay;
@@ -44,6 +56,7 @@ public class MainFrame extends JFrame {
 	private JButton jbtSingleStep;
 	private JButton jbtStop;
 	
+	private JScrollPane jspAlgorithms;
 	private List<AlgorithmPanel> algorithmsPanels;
 	
 	private int referenceStringSize = 500; //Tamanho da cadeia de páginas
@@ -55,6 +68,7 @@ public class MainFrame extends JFrame {
 	
 	private Timer timer;
 	private int timerSleepPeriod = 500;
+
 	
 	public MainFrame() {
 		
@@ -62,8 +76,7 @@ public class MainFrame extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		createComponents();
-		
-//		setSize(640, 480);
+		setPreferredSize(new Dimension(800, 600));
 		currentState = ExecutionState.SETUP;
 		jbtSetup.setSelected(true);
 		
@@ -78,7 +91,33 @@ public class MainFrame extends JFrame {
 		jpnMainPanel.setBorder(new EmptyBorder(new Insets(4, 6, 4, 6)));
 		jpnMainPanel.setLayout(new BorderLayout());
 		
+		jspAlgorithms = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
 		add(createControlPanel(), BorderLayout.NORTH);
+		add(jspAlgorithms, BorderLayout.CENTER);
+		add(createStatusPanel(), BorderLayout.SOUTH);
+	}
+
+	private Component createStatusPanel() {
+		JLabel jlbInsertedPage = new JLabel("Inserted page:");
+		JLabel jlbInsertedPageIndex = new JLabel("Inserted page index:");
+		
+		jtfInsertedPage = new JTextField(5);
+		jtfInsertedPage.setEditable(false);
+		
+		jtfInsertedPageIndex = new JTextField(5);
+		jtfInsertedPageIndex.setEditable(false);
+		
+		JPanel jpnStatus = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
+		jpnStatus.setBorder(new TitledBorder("Status"));
+		
+		jpnStatus.add(jlbInsertedPage);
+		jpnStatus.add(jtfInsertedPage);
+		jpnStatus.add(new JSeparator(SwingConstants.VERTICAL));
+		jpnStatus.add(jlbInsertedPageIndex);
+		jpnStatus.add(jtfInsertedPageIndex);
+		
+		return jpnStatus;
 	}
 
 	private JPanel createControlPanel() {
@@ -124,6 +163,7 @@ public class MainFrame extends JFrame {
 		
 		//Cria o panel do painel de controle que inclui o panel dos campos e dos botões:
 		JPanel jpnControlPanel = new JPanel(new BorderLayout());
+		jpnControlPanel.setBorder(new TitledBorder("Control Panel"));
 		jpnControlPanel.add(jpnFields, BorderLayout.NORTH);
 		jpnControlPanel.add(jpnButtons, BorderLayout.SOUTH);
 		
@@ -131,13 +171,11 @@ public class MainFrame extends JFrame {
 	}
 	
 	private void prepareSetup() {
+		renderStatus(null, null);
 		currentState = ExecutionState.SETUP;
 	}
 	
-	private void setup() {
-		//Reinicia para a primeira página:
-		currentPageIndex = -1;
-		
+	private void setup() {		
 		try {
 			referenceStringSize = Integer.parseInt(jtfReferenceStringSize.getText());
 			if (referenceStringSize <= 0) {
@@ -169,22 +207,22 @@ public class MainFrame extends JFrame {
 		//Gera as páginas:
 		PageGenerator pageGenerator = new PageGenerator(referenceStringSize);
 		referenceString = pageGenerator.getReferenceString();
-		
-		//Cria os algorítimos:
-		List<ReplacementAlgorithm> algorithms = createAlgorihtms();
 
 		//Cria os painéis para exibição dos estados dos algorítmos:
-		JPanel jpnAlgorithmsPanel = new JPanel(new GridLayout(algorithms.size(), 1));
-		algorithmsPanels = new ArrayList<AlgorithmPanel>();
-		for (ReplacementAlgorithm replacementAlgorithm : algorithms) {
-			AlgorithmPanel algorithmPanel = new AlgorithmPanel(replacementAlgorithm);
+		JPanel jpnAlgorithmsPanel = new JPanel(new GridLayout(ALGORITHMS_COUNT, 1));
+		algorithmsPanels = new ArrayList<AlgorithmPanel>(ALGORITHMS_COUNT);
+		for (int i = 0; i < ALGORITHMS_COUNT; i++) {
+			AlgorithmPanel algorithmPanel = new AlgorithmPanel();
 			algorithmsPanels.add(algorithmPanel);
 			
 			//Adiciona o painel à tela:
 			jpnAlgorithmsPanel.add(algorithmPanel);
 		}
-		add(jpnAlgorithmsPanel, BorderLayout.SOUTH);
 		
+		jspAlgorithms.setViewportView(jpnAlgorithmsPanel);
+		
+		stop();
+		pack();
 		currentState = ExecutionState.READY;
 	}
 	
@@ -213,6 +251,8 @@ public class MainFrame extends JFrame {
 		for (AlgorithmPanel algorithmPanel : algorithmsPanels) {
 			algorithmPanel.insert(referenceString[currentPageIndex], currentPageIndex);
 		}
+		renderStatus(referenceString[currentPageIndex], currentPageIndex);
+		
 		if (currentPageIndex == referenceString.length - 1) {
 			currentState = ExecutionState.END;
 			if (timer != null && timer.isRunning()) {
@@ -223,13 +263,18 @@ public class MainFrame extends JFrame {
 	}
 	
 	private synchronized void stop() {
-		timer.stop();
+		if (timer != null) {
+			timer.stop();
+		}
+
+		//Reinicia para a primeira página:
 		currentPageIndex = -1;
+		renderStatus(null, null);
 		
 		//Recria os algoritmos e os define em seus respectivos painéis:
 		List<ReplacementAlgorithm> algorithms = createAlgorihtms();
 		for (int i = 0; i < algorithms.size(); i++) {
-			algorithmsPanels.get(i).setReplacementAlgorithm(algorithms.get(i));
+			algorithmsPanels.get(i).setup(algorithms.get(i), framesNumber);
 		}		
 		
 		currentState = ExecutionState.READY;
@@ -245,7 +290,7 @@ public class MainFrame extends JFrame {
 		boolean canPlay = (currentState == ExecutionState.READY);
 		boolean canPause = (currentState == ExecutionState.PLAY);
 		boolean canDoSingleStep = (currentState == ExecutionState.READY);
-		boolean canStop = (currentState == ExecutionState.PLAY || currentState == ExecutionState.END);
+		boolean canStop = (currentState == ExecutionState.PLAY || currentState == ExecutionState.READY || currentState == ExecutionState.END);
 		
 		jbtSetup.setEnabled(canSetup);
 		jbtPlay.setEnabled(canPlay);
@@ -256,6 +301,20 @@ public class MainFrame extends JFrame {
 		boolean canEditFields = jbtSetup.isSelected();
 		jtfFramesNumber.setEnabled(canEditFields);
 		jtfReferenceStringSize.setEnabled(canEditFields);
+		jtfPlayStepInterval.setEnabled(canEditFields);
+	}
+	
+	private void renderStatus(Integer pageNumber, Integer currentPageIndex) {
+		String pageNumberStr = "";
+		String currentPageIndexStr = "";
+		if (pageNumber != null) {
+			pageNumberStr = pageNumber.toString();
+		}
+		if (currentPageIndex != null) {
+			currentPageIndexStr = currentPageIndex.toString();
+		}
+		jtfInsertedPage.setText(pageNumberStr);
+		jtfInsertedPageIndex.setText(currentPageIndexStr);
 	}
 	
 	private List<ReplacementAlgorithm> createAlgorihtms() {

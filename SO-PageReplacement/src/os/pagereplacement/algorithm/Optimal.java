@@ -12,8 +12,9 @@ public class Optimal extends ReplacementAlgorithm {
 	@Override
 	public int insert(int referencedPageIndex) {
 		int pageNumber = pageReferenceString[referencedPageIndex];
-		if (tryBasicInsert(pageNumber)) {
-			return -1;
+		int frameIndex = tryBasicInsert(pageNumber);;
+		if (frameIndex != -1) {
+			return frameIndex;
 		}
 
 		int[] frameCopy = frames.clone();
@@ -39,8 +40,8 @@ public class Optimal extends ReplacementAlgorithm {
 				break;
 			}
 		}
-		int replacedPageIndex = indexLastFrameFound;
+		int replacedFrameIndex = indexLastFrameFound;
 		frames[indexLastFrameFound] = pageNumber;
-		return replacedPageIndex;
+		return replacedFrameIndex;
 	}
 }

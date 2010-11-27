@@ -11,9 +11,10 @@ public class LFU extends ReplacementAlgorithm {
 
 	@Override
 	public int insert(int pageNumber) {
-		if (tryBasicInsert(pageNumber)) {
-			framesReferenceCounters[getPageFrameIndex(pageNumber)]++;
-			return -1;
+		int frameIndex = tryBasicInsert(pageNumber);
+		if (frameIndex != -1) {
+			framesReferenceCounters[frameIndex]++;
+			return frameIndex;
 		}
 
 		// Obtém o índice da página que foi referenciada menos vezes:
@@ -25,13 +26,13 @@ public class LFU extends ReplacementAlgorithm {
 		}
 
 		// Substitui a página menos referenciada pela nova página referenciada:
-		int replacedPageIndex = frameIndexOfLRUPage;
+		int replacedFrameIndex = frameIndexOfLRUPage;
 		frames[frameIndexOfLRUPage] = pageNumber;
 
 		// Define o contador de referencias da nova página para 1:
 		framesReferenceCounters[frameIndexOfLRUPage] = 1;
 
-		return replacedPageIndex;
+		return replacedFrameIndex;
 	}
 
 }

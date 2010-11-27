@@ -35,20 +35,23 @@ public abstract class ReplacementAlgorithm {
 	public abstract int insert(int pageNumber);
 
 	/**
-	 * Se a página ainda não estiver em um frame, incrementa o número de page faults e tenta inserir a página em um frame vazio, se houver
+	 * Se a página ainda não estiver em um frame, incrementa o número de page 
+	 * faults e tenta inserir a página em um frame vazio, se houver
 	 * 
 	 * @param pageNumber
-	 * @return true se a página já estiver em um frame ou se a inserção em um frame vazio ocorreu com sucesso; false caso contrário
+	 * @return
 	 */
-	protected boolean tryBasicInsert(int pageNumber) {
+	protected int tryBasicInsert(int pageNumber) {
 		if (getPageFrameIndex(pageNumber) != -1) {
-			return true;
+			return -1;
 		}
 		pageFaultCount++;
-		if (tryInsertFreeFrame(pageNumber)) {
-			return true;
+		int freeFrameIndex = tryInsertFreeFrame(pageNumber);
+		if (freeFrameIndex == -1) {
+			return -1;
+		} else {
+			return freeFrameIndex;
 		}
-		return false;
 	}
 
 	/**
@@ -84,15 +87,15 @@ public abstract class ReplacementAlgorithm {
 	 * Insere a página em um frame livre, caso exista
 	 * 
 	 * @param pageNumber
-	 * @return true se a página foi inserida; false caso contrário
+	 * @return índice do frame se a página foi inserida; -1 caso contrário
 	 */
-	protected boolean tryInsertFreeFrame(int pageNumber) {
+	protected int tryInsertFreeFrame(int pageNumber) {
 		int freeFrameIndex = findFreeFrameIndex();
 		if (freeFrameIndex != -1) {
 			frames[freeFrameIndex] = pageNumber;
-			return true;
+			return freeFrameIndex;
 		}
-		return false;
+		return -1;
 	}
 
 	public String getName() {
