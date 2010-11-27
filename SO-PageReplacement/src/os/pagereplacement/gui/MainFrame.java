@@ -59,8 +59,8 @@ public class MainFrame extends JFrame {
 	private JScrollPane jspAlgorithms;
 	private List<AlgorithmPanel> algorithmsPanels;
 	
-	private int referenceStringSize = 500; //Tamanho da cadeia de páginas
-	private int framesNumber = 100; //Quantidade de frames de memória
+	private int referenceStringSize = 20; //Tamanho da cadeia de páginas
+	private int framesNumber = 8; //Quantidade de frames de memória
 	private int[] referenceString; //Cadeia de páginas
 	private int currentPageIndex; //Índice da última página lida da cadeia de páginas
 	

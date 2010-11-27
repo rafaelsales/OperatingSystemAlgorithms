@@ -42,8 +42,9 @@ public abstract class ReplacementAlgorithm {
 	 * @return
 	 */
 	protected int tryBasicInsert(int pageNumber) {
-		if (getPageFrameIndex(pageNumber) != -1) {
-			return -1;
+		int pageFrameIndex = getPageFrameIndex(pageNumber);
+		if (pageFrameIndex != -1) {
+			return pageFrameIndex;
 		}
 		pageFaultCount++;
 		int freeFrameIndex = tryInsertFreeFrame(pageNumber);
@@ -100,9 +101,5 @@ public abstract class ReplacementAlgorithm {
 
 	public String getName() {
 		return name;
-	}
-
-	public void reset() {
-		
 	}
 }

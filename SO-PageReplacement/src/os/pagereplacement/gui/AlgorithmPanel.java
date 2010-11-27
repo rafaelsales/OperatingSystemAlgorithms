@@ -16,7 +16,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 
 import os.pagereplacement.algorithm.Optimal;
 import os.pagereplacement.algorithm.ReplacementAlgorithm;
@@ -73,7 +72,7 @@ public class AlgorithmPanel extends JPanel {
 	private JPanel createMemoryPanel() {
 		JPanel jpnMemory = new JPanel();
 		jtbMemory = new JTable();
-		jtbMemory.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		jtbMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		jtbMemory.setRowSelectionAllowed(false);
 		jtbMemory.setColumnSelectionAllowed(false);
 		jtbMemory.setCellSelectionEnabled(false);
@@ -124,38 +123,47 @@ public class AlgorithmPanel extends JPanel {
 			jtfAlgorithm.setText(replacementAlgorithm.getName());
 		}
 		
-		String[][] data = new String[2][1 + framesNumber];
+		setDataModel(new int[framesNumber]);
+	}
+
+	private void setDataModel(int[] frames) {
+		String[][] data = new String[2][1 + frames.length];
 		
 		//Create the memory table:
-		data[0][0] = "Index";
+		data[0][0] = "Frame";
 		data[1][0] = "Page";
 		int index = 0;
 		for (int i = 1; i < data[0].length; i++) {
-			data[0][i] = Integer.toString(index++);
-			data[1][i] = "N/A";
+			data[0][i] = Integer.toString(index);
+			data[1][i] = (frames[index] == -1) ? "" : Integer.toString(frames[index]);
+			index++;
 		}
 		
-		jtbMemory.setModel(new DefaultTableModel(data, data[0]));
-		getJtbMemoryCellRenderer(0, 0).setHorizontalAlignment(JLabel.RIGHT);
-		Font boldFont = getJtbMemoryCellRenderer(0, 0).getFont().deriveFont(Font.BOLD);
-		getJtbMemoryCellRenderer(0, 0).setFont(boldFont);
-		getJtbMemoryCellRenderer(1, 0).setFont(boldFont);
-		
-		for (int i = 0; i < jtbMemory.getColumnModel().getColumnCount(); i++) {
-			jtbMemory.getColumnModel().getColumn(i).setCellRenderer(defaultTableCellRenderer);
-			jtbMemory.getColumnModel().getColumn(i).sizeWidthToFit();
-			if (i >= 0) {
-				getJtbMemoryCellRenderer(0, i).setHorizontalAlignment(JLabel.CENTER);
-				getJtbMemoryCellRenderer(1, i).setHorizontalAlignment(JLabel.CENTER);
+		jtbMemory.setModel(new DefaultTableModel(data, data[0]) {
+			@Override
+			public boolean isCellEditable(int i, int j) {
+				return false;
 			}
-
+		});
+		
+		for (int j = 0; j < jtbMemory.getColumnModel().getColumnCount(); j++) {
+			jtbMemory.getColumnModel().getColumn(j).setCellRenderer(defaultTableCellRenderer);
+			jtbMemory.getColumnModel().getColumn(j).sizeWidthToFit();
 		}
+
+//		jtbMemory.repaint();
 	}
 	
 	private DefaultTableCellRenderer defaultTableCellRenderer = new DefaultTableCellRenderer() {
 		@Override
 		public Component getTableCellRendererComponent(JTable jtable, Object obj, boolean flag, boolean flag1, int i, int j) {
 			JLabel jlbCell = (JLabel) super.getTableCellRendererComponent(jtable, obj, flag, flag1, i, j);;
+			if (j == 0) {
+				jlbCell.setHorizontalAlignment(JLabel.RIGHT);
+				jlbCell.setFont(jlbCell.getFont().deriveFont(Font.BOLD));
+			} else {				
+				jlbCell.setHorizontalAlignment(JLabel.CENTER);
+			}
 			if (currentFrameIndex == -1) {
 				return jlbCell;
 			}
