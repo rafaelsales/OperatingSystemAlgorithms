@@ -24,7 +24,7 @@ public class PageGenerator {
 		referenceString = new int[count];
 
 		for (int i = 0; i < count; i++)
-			referenceString[i] = generator.nextInt(10 + count);
+			referenceString[i] = generator.nextInt(RANGE);
 	}
 
 	public int[] getReferenceString() {
