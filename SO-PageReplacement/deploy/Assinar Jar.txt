@@ -1,2 +1,2 @@
-keytool -genkeypair -alias AFLCert -keystore AFL.keystore -validity 180
-jarsigner -keystore AFL.keystore -signedjar AFL.jar AFLBin.jar AFLCert
+keytool -genkeypair -alias rafael_sales -dname "CN=Rafael Sales, OU=Computer, O=UFC, L=Fortaleza, S=CE, C=BR" -keystore rafael_sales.keystore -validity 180
+jarsigner -keystore rafael_sales.keystore -signedjar page_replacement.jar page_replacement.jar rafael_sales
