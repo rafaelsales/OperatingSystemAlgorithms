@@ -61,7 +61,7 @@ public abstract class ReplacementAlgorithm {
 	 * @param pageNumber
 	 * @return índice da página ou -1 caso a página não esteja no vetor de frames
 	 */
-	protected int getPageFrameIndex(int pageNumber) {
+	public int getPageFrameIndex(int pageNumber) {
 		for (int i = 0; i < frames.length; i++) {
 			if (pageNumber == frames[i]) {
 				return i;

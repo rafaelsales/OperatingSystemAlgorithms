@@ -23,12 +23,11 @@ public class LRU extends ReplacementAlgorithm {
 		}
 		
 		// Obtém o índice da página a ser substituída, isto é, o índice da base da pilha:
-		Integer frameIndexAtStackBase = framesIndexesStack.remove(framesIndexesStack.size() - 1);
-		int replacedFrameIndex = frameIndexAtStackBase;
+		int replacedFrameIndex = framesIndexesStack.remove(0);
 
-		// Adiciona a nova página referenciada no topo da pilha:
+		// Substitui a página e adiciona o índice de seu frame no topo da pilha:
 		frames[replacedFrameIndex] = pageNumber;
-		framesIndexesStack.push(pageNumber);
+		framesIndexesStack.push(replacedFrameIndex);
 
 		return replacedFrameIndex;
 	}
