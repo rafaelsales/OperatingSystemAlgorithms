@@ -56,6 +56,7 @@ public class MainPanel extends JPanel {
 	private JTextField jtfInsertedPageIndex;
 	
 	private JToggleButton jbtSetup;
+	private JButton jbtDefineReferenceString;
 	private JButton jbtPlay;
 	private JButton jbtPause;
 	private JButton jbtSingleStep;
@@ -115,6 +116,10 @@ public class MainPanel extends JPanel {
 			jbtSetup = new JToggleButton("Setup");
 			jbtSetup.addActionListener(buttonsActionListener);
 			
+			jbtDefineReferenceString = new JButton("Set Ref. String");
+			jbtDefineReferenceString.setToolTipText("Set Reference String");
+			jbtDefineReferenceString.addActionListener(buttonsActionListener);
+			
 			jbtPlay = new JButton("Play");
 			jbtPlay.addActionListener(buttonsActionListener);
 			
@@ -143,6 +148,7 @@ public class MainPanel extends JPanel {
 		JPanel jpnButtons = new JPanel(new GridLayout(1, 4, 4, 2));
 		{
 			jpnButtons.add(jbtSetup);
+			jpnButtons.add(jbtDefineReferenceString);
 			jpnButtons.add(jbtPlay);
 			jpnButtons.add(jbtPause);
 			jpnButtons.add(jbtSingleStep);
@@ -226,6 +232,7 @@ public class MainPanel extends JPanel {
 	}
 	
 	private void prepareSetup() {
+		referenceString = null;
 		renderStatus(null, null);
 		setJtbReferenceStringDataModel(null);
 		currentState = ExecutionState.SETUP;
@@ -238,7 +245,7 @@ public class MainPanel extends JPanel {
 				throw new Exception();
 			}
 		} catch (Exception e) {
-			showErrorDialog("Enter a valid reference string size", true);
+			showMessageDialog("Enter a valid reference string size", true);
 			return;
 		}
 		try {
@@ -247,7 +254,7 @@ public class MainPanel extends JPanel {
 				throw new Exception();
 			}
 		} catch (Exception e) {
-			showErrorDialog("Enter a valid number of frames", true);
+			showMessageDialog("Enter a valid number of frames", true);
 			return;
 		}
 		try {
@@ -256,13 +263,16 @@ public class MainPanel extends JPanel {
 				throw new Exception();
 			}
 		} catch (Exception e) {
-			showErrorDialog("Enter a valid play step interval", true);
+			showMessageDialog("Enter a valid play step interval", true);
 			return;
 		}
 		
-		//Gera as páginas:
-		PageGenerator pageGenerator = new PageGenerator(referenceStringSize);
-		referenceString = pageGenerator.getReferenceString();
+		if (referenceString == null) {
+			//Gera as páginas:
+			PageGenerator pageGenerator = new PageGenerator(referenceStringSize);
+			referenceString = pageGenerator.getReferenceString();
+			showMessageDialog("A reference string has been generated", false);
+		}
 
 		//Cria os painéis para exibição dos estados dos algorítmos:
 		JPanel jpnAlgorithmsPanel = new JPanel(new GridLayout(ALGORITHMS_COUNT, 1));
@@ -279,6 +289,25 @@ public class MainPanel extends JPanel {
 		
 		stop();
 		currentState = ExecutionState.READY;
+	}
+
+	private void defineReferenceString() {
+		try {
+			String referenceStr = JOptionPane.showInputDialog(this, "Enter a comma separated reference string. Example: 30, 51, 25");
+			if (referenceStr == null) {
+				return;
+			}
+			referenceStr = referenceStr.replaceAll("[ {}]", "");
+			String[] referenceStrArray = referenceStr.split(",");
+			referenceString = new int[referenceStrArray.length];
+			for (int i = 0; i < referenceStrArray.length; i++) {
+				referenceString[i] = Integer.parseInt(referenceStrArray[i]);
+			}
+			jtfReferenceStringSize.setText(Integer.toString(referenceString.length));
+			setJtbReferenceStringDataModel(referenceString);
+		} catch (Exception e) {
+			showMessageDialog("Invalid reference string", true);
+		}
 	}
 	
 	private synchronized void play() {
@@ -347,19 +376,21 @@ public class MainPanel extends JPanel {
 		currentState = ExecutionState.READY;
 	}
 	
-	private void showErrorDialog(String message, boolean error) {
+	private void showMessageDialog(String message, boolean error) {
 		int messageType = error ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE;
 		JOptionPane.showMessageDialog(this, message, APPLICATION_TITLE, messageType);
 	}
 	
 	private void enableDisableControls() {
 		boolean canSetup = (currentState == ExecutionState.SETUP || currentState == ExecutionState.READY || currentState == ExecutionState.END);
+		boolean canDefineReferenceString = (currentState == ExecutionState.SETUP);
 		boolean canPlay = (currentState == ExecutionState.READY);
 		boolean canPause = (currentState == ExecutionState.PLAY);
 		boolean canDoSingleStep = (currentState == ExecutionState.READY);
 		boolean canStop = (currentState == ExecutionState.PLAY || currentState == ExecutionState.READY || currentState == ExecutionState.END);
 		
 		jbtSetup.setEnabled(canSetup);
+		jbtDefineReferenceString.setEnabled(canDefineReferenceString);
 		jbtPlay.setEnabled(canPlay);
 		jbtPause.setEnabled(canPause);
 		jbtSingleStep.setEnabled(canDoSingleStep);
@@ -404,6 +435,8 @@ public class MainPanel extends JPanel {
 				} else {
 					setup();
 				}
+			} else if (jbtDefineReferenceString == e.getSource()) {
+				defineReferenceString();
 			} else if (jbtPlay == e.getSource()) {
 				play();
 			} else if (jbtPause == e.getSource()) {
