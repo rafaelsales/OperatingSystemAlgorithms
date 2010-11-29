@@ -295,6 +295,7 @@ public class MainPanel extends JPanel {
 		try {
 			String referenceStr = JOptionPane.showInputDialog(this, "Enter a comma separated reference string. Example: 30, 51, 25");
 			if (referenceStr == null) {
+				referenceString = null;
 				return;
 			}
 			referenceStr = referenceStr.replaceAll("[ {}]", "");
@@ -306,6 +307,7 @@ public class MainPanel extends JPanel {
 			jtfReferenceStringSize.setText(Integer.toString(referenceString.length));
 			setJtbReferenceStringDataModel(referenceString);
 		} catch (Exception e) {
+			referenceString = null;
 			showMessageDialog("Invalid reference string", true);
 		}
 	}
