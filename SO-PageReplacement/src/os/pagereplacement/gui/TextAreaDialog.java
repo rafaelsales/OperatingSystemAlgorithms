@@ -46,7 +46,7 @@ public class TextAreaDialog extends JDialog {
 		
 		setPreferredSize(new Dimension(360, 240));
 		pack();
-		setLocationRelativeTo(null);
+		setLocation((int) parentPanel.getBounds().getCenterX() - getWidth() / 2, (int) parentPanel.getBounds().getCenterY() - getHeight() / 2);
 		jbtClose.requestFocus();
 		setVisible(true);
 	}

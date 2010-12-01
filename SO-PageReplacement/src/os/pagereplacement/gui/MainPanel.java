@@ -66,7 +66,6 @@ public class MainPanel extends JPanel {
 	private JScrollPane jspAlgorithms;
 	private List<AlgorithmPanel> algorithmsPanels;
 	private JTable jtbReferenceString;
-	private JScrollPane jspReferenceString;
 	
 	private final int DEFAULT_REFERENCE_STRING_SIZE; //Tamanho padrão para a cadeia de referencias de páginas
 	private int framesNumber; //Quantidade de frames de memória
@@ -84,7 +83,7 @@ public class MainPanel extends JPanel {
 		
 		createComponents();
 		
-		setPreferredSize(new Dimension(800, 650));
+		setPreferredSize(new Dimension(800, 570));
 		
 		currentState = ExecutionState.SETUP;
 		jbtSetup.setSelected(true);
@@ -95,7 +94,7 @@ public class MainPanel extends JPanel {
 		setBorder(new EmptyBorder(new Insets(4, 6, 4, 6)));
 		setLayout(new BorderLayout());
 		
-		jspAlgorithms = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		jspAlgorithms = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		
 		add(createControlPanel(), BorderLayout.NORTH);
 		add(jspAlgorithms, BorderLayout.CENTER);
@@ -107,8 +106,8 @@ public class MainPanel extends JPanel {
 		JLabel jlbPlayStepInterval = new JLabel("Play step interval (ms):");
 		
 		{
-			jtfNumberOfFrames = new JTextField(Integer.toString(framesNumber), 15);
-			jtfPlayStepInterval = new JTextField(Integer.toString(timerSleepPeriod), 15);
+			jtfNumberOfFrames = new JTextField(Integer.toString(framesNumber), 10);
+			jtfPlayStepInterval = new JTextField(Integer.toString(timerSleepPeriod), 10);
 		}
 		
 		{
@@ -135,12 +134,13 @@ public class MainPanel extends JPanel {
 		}
 
 		//Cria o panel dos campos:
-		JPanel jpnFields = new JPanel(new GridLayout(2, 2, 4, 2));
+		JPanel jpnFields = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		{
 			jpnFields.setBorder(new EmptyBorder(0, 4, 0, 4));
 			jpnFields.add(jlbNumberOfFrames);
-			jpnFields.add(jlbPlayStepInterval);
 			jpnFields.add(jtfNumberOfFrames);
+			jpnFields.add(new JSeparator(JSeparator.VERTICAL));
+			jpnFields.add(jlbPlayStepInterval);
 			jpnFields.add(jtfPlayStepInterval);
 		}
 		
@@ -191,6 +191,7 @@ public class MainPanel extends JPanel {
 		
 		//Criação da tabela para exibição da cadeia de referencia de páginas	
 		JPanel jpnReferenceStringTable = new JPanel(new BorderLayout());
+		JScrollPane jspReferenceString;
 		{
 			jtbReferenceString = new JTable();
 			jtbReferenceString.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
