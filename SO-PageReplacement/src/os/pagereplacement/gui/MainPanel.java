@@ -84,7 +84,7 @@ public class MainPanel extends JPanel {
 		
 		createComponents();
 		
-		setPreferredSize(new Dimension(800, 570));
+		setPreferredSize(new Dimension(800, 640));
 		
 		currentState = ExecutionState.SETUP;
 		jbtSetup.setSelected(true);
@@ -284,6 +284,8 @@ public class MainPanel extends JPanel {
 		}
 		
 		jspAlgorithms.setViewportView(jpnAlgorithmsPanel);
+		jspAlgorithms.doLayout();
+		doLayout();
 		
 		stop();
 		currentState = ExecutionState.READY;
