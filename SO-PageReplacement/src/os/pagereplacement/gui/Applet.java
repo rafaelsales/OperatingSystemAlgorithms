@@ -3,6 +3,8 @@ package os.pagereplacement.gui;
 import javax.swing.JApplet;
 import javax.swing.UIManager;
 
+import os.pagereplacement.PageGenerator;
+
 @SuppressWarnings("serial")
 public class Applet extends JApplet {
 	
@@ -17,7 +19,7 @@ public class Applet extends JApplet {
 	@Override
 	public void init() {
 		super.init();
-		final int referenceStringSize = 500;
+		final int referenceStringSize = PageGenerator.DEFAULT_SIZE;
 		final int frameSize = 100;
 		setContentPane(new MainPanel(referenceStringSize, frameSize));
 		doLayout();
