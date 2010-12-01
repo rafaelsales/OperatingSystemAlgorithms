@@ -265,7 +265,9 @@ public class MainPanel extends JPanel {
 		}
 		
 		if (referenceString == null) {
-			generateReferenceString();
+			if (!generateReferenceString()) {
+				return;
+			}
 		} else {
 			new TextAreaDialog("Using the following reference string:", Arrays.toString(referenceString), this);
 		}
@@ -306,14 +308,14 @@ public class MainPanel extends JPanel {
 		}
 	}
 
-	private void generateReferenceString() {
-		int referenceStringSize;
-		int pageNumberRange;
+	private boolean generateReferenceString() {
+		int referenceStringSize = -1;
+		int pageNumberRange = -1;
 		do {
 			try {
 				String referenceStringSizeStr = JOptionPane.showInputDialog(this, "Enter the reference string size:", DEFAULT_REFERENCE_STRING_SIZE);
 				if (referenceStringSizeStr == null) {
-					return;
+					return false;
 				} else {
 					referenceStringSize = Integer.parseInt(referenceStringSizeStr);
 					if (referenceStringSize <= 0) {
@@ -322,14 +324,13 @@ public class MainPanel extends JPanel {
 				}
 			} catch (Exception e) {
 				showMessageDialog("Enter a valid reference string size!", true);
-				return;
 			}
 		} while (referenceStringSize <= 0);
 		do {
 			try {
 				String pageNumberRangeStr = JOptionPane.showInputDialog(this, "Enter the page number range:", PageGenerator.RANGE);
 				if (pageNumberRangeStr == null) {
-					return;
+					return false;
 				} else {
 					pageNumberRange = Integer.parseInt(pageNumberRangeStr);
 					if (pageNumberRange <= 0) {
@@ -338,14 +339,14 @@ public class MainPanel extends JPanel {
 				}
 			} catch (Exception e) {
 				showMessageDialog("Enter a valid page number range!", true);
-				return;
 			}
-		} while (referenceStringSize <= 0);
+		} while (pageNumberRange <= 0);
 		
 		//Gera as páginas:
 		PageGenerator pageGenerator = new PageGenerator(referenceStringSize, pageNumberRange);
 		referenceString = pageGenerator.getReferenceString();
 		new TextAreaDialog("The following reference string has been generated:", Arrays.toString(referenceString), this);
+		return true;
 	}
 	
 	private synchronized void play() {
@@ -421,24 +422,24 @@ public class MainPanel extends JPanel {
 	
 	private void enableDisableControls() {
 		boolean canSetup = (currentState == ExecutionState.SETUP || currentState == ExecutionState.READY || currentState == ExecutionState.END);
-		boolean canDefineReferenceString = (currentState == ExecutionState.SETUP);
+		boolean canEditFields = (currentState == ExecutionState.SETUP);
 		boolean canPlay = (currentState == ExecutionState.READY);
 		boolean canPause = (currentState == ExecutionState.PLAY);
 		boolean canDoSingleStep = (currentState == ExecutionState.READY);
 		boolean canStop = (currentState == ExecutionState.PLAY || currentState == ExecutionState.READY || currentState == ExecutionState.END);
 		
 		jbtSetup.setEnabled(canSetup);
-		jbtDefineReferenceString.setEnabled(canDefineReferenceString);
-		jbtGenerateReferenceString.setEnabled(canDefineReferenceString);
+		jbtSetup.setSelected(canEditFields);
+		jbtDefineReferenceString.setEnabled(canEditFields);
+		jbtGenerateReferenceString.setEnabled(canEditFields);
 		jbtPlay.setEnabled(canPlay);
 		jbtPause.setEnabled(canPause);
 		jbtSingleStep.setEnabled(canDoSingleStep);
 		jbtStop.setEnabled(canStop);
 		
-		boolean canEditFields = jbtSetup.isSelected();
-		
 		jtfNumberOfFrames.setEnabled(canEditFields);
 		jtfPlayStepInterval.setEnabled(canEditFields);
+		
 	}
 	
 	private void renderStatus(Integer pageNumber, Integer currentPageIndex) {
