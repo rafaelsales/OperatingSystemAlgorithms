@@ -7,8 +7,8 @@ package os.pagereplacement;
  */
 
 public class PageGenerator {
-	private static final int DEFAULT_SIZE = 100;
-	private static final int RANGE = 999;
+	public static int DEFAULT_SIZE = 1000;
+	public static final int RANGE = 999;
 
 	int[] referenceString;
 
@@ -17,6 +17,10 @@ public class PageGenerator {
 	}
 
 	public PageGenerator(int count) {
+		this(count, RANGE);
+	}
+	
+	public PageGenerator(int count, int range) {
 		if (count < 0)
 			throw new IllegalArgumentException();
 
@@ -24,7 +28,7 @@ public class PageGenerator {
 		referenceString = new int[count];
 
 		for (int i = 0; i < count; i++)
-			referenceString[i] = generator.nextInt(RANGE);
+			referenceString[i] = generator.nextInt(range);
 	}
 
 	public int[] getReferenceString() {

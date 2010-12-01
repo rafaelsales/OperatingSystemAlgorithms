@@ -50,8 +50,7 @@ public class MainPanel extends JPanel {
 	public static final String APPLICATION_TITLE = "Page Replacement";
 	private static final int ALGORITHMS_COUNT = 5;
 	
-	private JTextField jtfReferenceStringSize;
-	private JTextField jtfFramesNumber;
+	private JTextField jtfNumberOfFrames;
 	private JTextField jtfPlayStepInterval;
 	private JTextField jtfInsertedPage;
 	private JTextField jtfInsertedPageIndex;
@@ -69,7 +68,7 @@ public class MainPanel extends JPanel {
 	private JTable jtbReferenceString;
 	private JScrollPane jspReferenceString;
 	
-	private int referenceStringSize; //Tamanho da cadeia de páginas
+	private final int DEFAULT_REFERENCE_STRING_SIZE; //Tamanho padrão para a cadeia de referencias de páginas
 	private int framesNumber; //Quantidade de frames de memória
 	private int[] referenceString; //Cadeia de páginas
 	private int currentPageIndex = -1; //Índice da última página lida da cadeia de páginas
@@ -80,7 +79,7 @@ public class MainPanel extends JPanel {
 	private int timerSleepPeriod = 0;
 
 	public MainPanel(int referenceStringSize, int framesNumber) {
-		this.referenceStringSize = referenceStringSize;
+		this.DEFAULT_REFERENCE_STRING_SIZE = referenceStringSize;
 		this.framesNumber = framesNumber;
 		
 		createComponents();
@@ -104,13 +103,11 @@ public class MainPanel extends JPanel {
 	}
 
 	private JPanel createControlPanel() {
-		JLabel jlbReferenceStringSize = new JLabel("Reference String Size:");
-		JLabel jlbNumberFrame = new JLabel("Frame count:");
+		JLabel jlbNumberOfFrames = new JLabel("Number of frames:");
 		JLabel jlbPlayStepInterval = new JLabel("Play step interval (ms):");
 		
 		{
-			jtfReferenceStringSize = new JTextField(Integer.toString(referenceStringSize), 15);
-			jtfFramesNumber = new JTextField(Integer.toString(framesNumber), 15);
+			jtfNumberOfFrames = new JTextField(Integer.toString(framesNumber), 15);
 			jtfPlayStepInterval = new JTextField(Integer.toString(timerSleepPeriod), 15);
 		}
 		
@@ -138,14 +135,12 @@ public class MainPanel extends JPanel {
 		}
 
 		//Cria o panel dos campos:
-		JPanel jpnFields = new JPanel(new GridLayout(2, 3, 4, 2));
+		JPanel jpnFields = new JPanel(new GridLayout(2, 2, 4, 2));
 		{
 			jpnFields.setBorder(new EmptyBorder(0, 4, 0, 4));
-			jpnFields.add(jlbReferenceStringSize);
-			jpnFields.add(jlbNumberFrame);
+			jpnFields.add(jlbNumberOfFrames);
 			jpnFields.add(jlbPlayStepInterval);
-			jpnFields.add(jtfReferenceStringSize);
-			jpnFields.add(jtfFramesNumber);
+			jpnFields.add(jtfNumberOfFrames);
 			jpnFields.add(jtfPlayStepInterval);
 		}
 		
@@ -243,23 +238,14 @@ public class MainPanel extends JPanel {
 		currentState = ExecutionState.SETUP;
 	}
 	
-	private void setup() {		
+	private void setup() {
 		try {
-			referenceStringSize = Integer.parseInt(jtfReferenceStringSize.getText());
-			if (referenceStringSize <= 0) {
-				throw new Exception();
-			}
-		} catch (Exception e) {
-			showMessageDialog("Enter a valid reference string size", true);
-			return;
-		}
-		try {
-			framesNumber = Integer.parseInt(jtfFramesNumber.getText());
+			framesNumber = Integer.parseInt(jtfNumberOfFrames.getText());
 			if (framesNumber <= 0) {
 				throw new Exception();
 			}
 		} catch (Exception e) {
-			showMessageDialog("Enter a valid number of frames", true);
+			showMessageDialog("Enter a valid number of frames!", true);
 			return;
 		}
 		try {
@@ -268,7 +254,7 @@ public class MainPanel extends JPanel {
 				throw new Exception();
 			}
 		} catch (Exception e) {
-			showMessageDialog("Enter a valid play step interval", true);
+			showMessageDialog("Enter a valid play step interval!", true);
 			return;
 		}
 		
@@ -297,9 +283,7 @@ public class MainPanel extends JPanel {
 
 	private void defineReferenceString() {
 		try {
-			String referenceStr = JOptionPane.showInputDialog(this, 
-					"Enter a comma separated reference string. Example: 30, 51, 25",
-					APPLICATION_TITLE, JOptionPane.QUESTION_MESSAGE);
+			String referenceStr = JOptionPane.showInputDialog(this, "Enter a comma separated reference string. Example: 30, 51, 25");
 			if (referenceStr == null) {
 				return;
 			}
@@ -309,17 +293,51 @@ public class MainPanel extends JPanel {
 			for (int i = 0; i < referenceStrArray.length; i++) {
 				referenceString[i] = Integer.parseInt(referenceStrArray[i]);
 			}
-			jtfReferenceStringSize.setText(Integer.toString(referenceString.length));
 			setJtbReferenceStringDataModel(referenceString);
 		} catch (Exception e) {
 			referenceString = null;
-			showMessageDialog("Invalid reference string", true);
+			showMessageDialog("Invalid reference string!", true);
 		}
 	}
 
 	private void generateReferenceString() {
+		int referenceStringSize;
+		int pageNumberRange;
+		do {
+			try {
+				String referenceStringSizeStr = JOptionPane.showInputDialog(this, "Enter the reference string size:", DEFAULT_REFERENCE_STRING_SIZE);
+				if (referenceStringSizeStr == null) {
+					return;
+				} else {
+					referenceStringSize = Integer.parseInt(referenceStringSizeStr);
+					if (referenceStringSize <= 0) {
+						throw new Exception();
+					}
+				}
+			} catch (Exception e) {
+				showMessageDialog("Enter a valid reference string size!", true);
+				return;
+			}
+		} while (referenceStringSize <= 0);
+		do {
+			try {
+				String pageNumberRangeStr = JOptionPane.showInputDialog(this, "Enter the page number range:", PageGenerator.RANGE);
+				if (pageNumberRangeStr == null) {
+					return;
+				} else {
+					pageNumberRange = Integer.parseInt(pageNumberRangeStr);
+					if (pageNumberRange <= 0) {
+						throw new Exception();
+					}
+				}
+			} catch (Exception e) {
+				showMessageDialog("Enter a valid page number range!", true);
+				return;
+			}
+		} while (referenceStringSize <= 0);
+		
 		//Gera as páginas:
-		PageGenerator pageGenerator = new PageGenerator(referenceStringSize);
+		PageGenerator pageGenerator = new PageGenerator(referenceStringSize, pageNumberRange);
 		referenceString = pageGenerator.getReferenceString();
 		new TextAreaDialog("The following reference string has been generated:", Arrays.toString(referenceString), this);
 	}
@@ -413,8 +431,7 @@ public class MainPanel extends JPanel {
 		
 		boolean canEditFields = jbtSetup.isSelected();
 		
-		jtfFramesNumber.setEnabled(canEditFields);
-		jtfReferenceStringSize.setEnabled(canEditFields);
+		jtfNumberOfFrames.setEnabled(canEditFields);
 		jtfPlayStepInterval.setEnabled(canEditFields);
 	}
 	
@@ -452,7 +469,7 @@ public class MainPanel extends JPanel {
 				}
 			} else if (jbtDefineReferenceString == e.getSource()) {
 				defineReferenceString();
-			} else if (jbtDefineReferenceString == e.getSource()) {
+			} else if (jbtGenerateReferenceString == e.getSource()) {
 				generateReferenceString();
 			} else if (jbtPlay == e.getSource()) {
 				play();

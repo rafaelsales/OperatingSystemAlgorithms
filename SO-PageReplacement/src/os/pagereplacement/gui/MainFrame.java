@@ -4,6 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import os.pagereplacement.PageGenerator;
+
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame {
 	
@@ -14,7 +16,7 @@ public class MainFrame extends JFrame {
 			referenceStringSize = Integer.parseInt(args[0]);
 			frameSize = Integer.parseInt(args[1]);
 		} catch (Exception e) {
-			referenceStringSize = 1000;
+			referenceStringSize = PageGenerator.DEFAULT_SIZE;
 			frameSize = 100;
 			System.out.println("Parâmetros inválidos. Utilizando parâmetros padrões: " + referenceStringSize + " " + frameSize);
 		}
