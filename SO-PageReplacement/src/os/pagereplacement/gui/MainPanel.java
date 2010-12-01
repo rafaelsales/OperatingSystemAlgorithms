@@ -12,6 +12,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -57,6 +58,7 @@ public class MainPanel extends JPanel {
 	
 	private JToggleButton jbtSetup;
 	private JButton jbtDefineReferenceString;
+	private JButton jbtGenerateReferenceString;
 	private JButton jbtPlay;
 	private JButton jbtPause;
 	private JButton jbtSingleStep;
@@ -116,9 +118,11 @@ public class MainPanel extends JPanel {
 			jbtSetup = new JToggleButton("Setup");
 			jbtSetup.addActionListener(buttonsActionListener);
 			
-			jbtDefineReferenceString = new JButton("Set Ref. String");
-			jbtDefineReferenceString.setToolTipText("Set Reference String");
+			jbtDefineReferenceString = new JButton("Set Reference String");
 			jbtDefineReferenceString.addActionListener(buttonsActionListener);
+			
+			jbtGenerateReferenceString = new JButton("Generate Reference String");
+			jbtGenerateReferenceString.addActionListener(buttonsActionListener);
 			
 			jbtPlay = new JButton("Play");
 			jbtPlay.addActionListener(buttonsActionListener);
@@ -136,6 +140,7 @@ public class MainPanel extends JPanel {
 		//Cria o panel dos campos:
 		JPanel jpnFields = new JPanel(new GridLayout(2, 3, 4, 2));
 		{
+			jpnFields.setBorder(new EmptyBorder(0, 4, 0, 4));
 			jpnFields.add(jlbReferenceStringSize);
 			jpnFields.add(jlbNumberFrame);
 			jpnFields.add(jlbPlayStepInterval);
@@ -145,10 +150,11 @@ public class MainPanel extends JPanel {
 		}
 		
 		//Cria o panel dos botões:
-		JPanel jpnButtons = new JPanel(new GridLayout(1, 4, 4, 2));
+		JPanel jpnButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 2));
 		{
 			jpnButtons.add(jbtSetup);
 			jpnButtons.add(jbtDefineReferenceString);
+			jpnButtons.add(jbtGenerateReferenceString);
 			jpnButtons.add(jbtPlay);
 			jpnButtons.add(jbtPause);
 			jpnButtons.add(jbtSingleStep);
@@ -156,7 +162,7 @@ public class MainPanel extends JPanel {
 		}
 		
 		//Cria o panel do painel de controle que inclui o panel dos campos e dos botões:
-		JPanel jpnControlPanel = new JPanel(new BorderLayout());
+		JPanel jpnControlPanel = new JPanel(new BorderLayout(2, 2));
 		{
 			jpnControlPanel.setBorder(new TitledBorder("Control Panel"));
 			jpnControlPanel.add(jpnFields, BorderLayout.NORTH);
@@ -232,7 +238,6 @@ public class MainPanel extends JPanel {
 	}
 	
 	private void prepareSetup() {
-		referenceString = null;
 		renderStatus(null, null);
 		setJtbReferenceStringDataModel(null);
 		currentState = ExecutionState.SETUP;
@@ -268,10 +273,9 @@ public class MainPanel extends JPanel {
 		}
 		
 		if (referenceString == null) {
-			//Gera as páginas:
-			PageGenerator pageGenerator = new PageGenerator(referenceStringSize);
-			referenceString = pageGenerator.getReferenceString();
-			showMessageDialog("A reference string has been generated", false);
+			generateReferenceString();
+		} else {
+			new TextAreaDialog("Using the following reference string:", Arrays.toString(referenceString), this);
 		}
 
 		//Cria os painéis para exibição dos estados dos algorítmos:
@@ -293,12 +297,13 @@ public class MainPanel extends JPanel {
 
 	private void defineReferenceString() {
 		try {
-			String referenceStr = JOptionPane.showInputDialog(this, "Enter a comma separated reference string. Example: 30, 51, 25");
+			String referenceStr = JOptionPane.showInputDialog(this, 
+					"Enter a comma separated reference string. Example: 30, 51, 25",
+					APPLICATION_TITLE, JOptionPane.QUESTION_MESSAGE);
 			if (referenceStr == null) {
-				referenceString = null;
 				return;
 			}
-			referenceStr = referenceStr.replaceAll("[ {}]", "");
+			referenceStr = referenceStr.replaceAll("[ {}\\[\\]]", "");
 			String[] referenceStrArray = referenceStr.split(",");
 			referenceString = new int[referenceStrArray.length];
 			for (int i = 0; i < referenceStrArray.length; i++) {
@@ -310,6 +315,13 @@ public class MainPanel extends JPanel {
 			referenceString = null;
 			showMessageDialog("Invalid reference string", true);
 		}
+	}
+
+	private void generateReferenceString() {
+		//Gera as páginas:
+		PageGenerator pageGenerator = new PageGenerator(referenceStringSize);
+		referenceString = pageGenerator.getReferenceString();
+		new TextAreaDialog("The following reference string has been generated:", Arrays.toString(referenceString), this);
 	}
 	
 	private synchronized void play() {
@@ -393,6 +405,7 @@ public class MainPanel extends JPanel {
 		
 		jbtSetup.setEnabled(canSetup);
 		jbtDefineReferenceString.setEnabled(canDefineReferenceString);
+		jbtGenerateReferenceString.setEnabled(canDefineReferenceString);
 		jbtPlay.setEnabled(canPlay);
 		jbtPause.setEnabled(canPause);
 		jbtSingleStep.setEnabled(canDoSingleStep);
@@ -439,6 +452,8 @@ public class MainPanel extends JPanel {
 				}
 			} else if (jbtDefineReferenceString == e.getSource()) {
 				defineReferenceString();
+			} else if (jbtDefineReferenceString == e.getSource()) {
+				generateReferenceString();
 			} else if (jbtPlay == e.getSource()) {
 				play();
 			} else if (jbtPause == e.getSource()) {

@@ -41,15 +41,15 @@ public class AlgorithmPanel extends JPanel {
 
 	private JPanel createStatusPanel() {
 		JLabel jlbReplacedPage = new JLabel("Last Replaced page:");
-		jtfReplacedPage = new JTextField(4);
+		jtfReplacedPage = new JTextField(5);
 		jtfReplacedPage.setEditable(false);
 		
 		JLabel jlbPageFaults = new JLabel("Page faults:");
-		jtfPageFaults = new JTextField(4);
+		jtfPageFaults = new JTextField(5);
 		jtfPageFaults.setEditable(false);
 		
 		JLabel jlbAlgorihtm = new JLabel("Algorithm:");
-		jtfAlgorithm = new JTextField();
+		jtfAlgorithm = new JTextField(8);
 		jtfAlgorithm.setEditable(false);
 		
 		JPanel jpnStatus = new JPanel(new FlowLayout(FlowLayout.LEADING, 2, 2));
@@ -62,12 +62,11 @@ public class AlgorithmPanel extends JPanel {
 		jpnStatus.add(jlbPageFaults);
 		jpnStatus.add(jtfPageFaults);
 		
-		
 		return jpnStatus;
 	}
 	
 	private JPanel createMemoryPanel() {
-		JPanel jpnMemory = new JPanel(new BorderLayout());
+		JPanel jpnMemory = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		jtbMemory = new JTable();
 		jtbMemory.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		jtbMemory.setRowSelectionAllowed(false);
@@ -120,6 +119,7 @@ public class AlgorithmPanel extends JPanel {
 		}
 		
 		setJtbMemoryDataModel(replacementAlgorithm.getFrames());
+		doLayout();
 	}
 
 	private void setJtbMemoryDataModel(int[] frames) {

@@ -21,7 +21,6 @@ public class SwingUtil {
 		
 		for (int j = 0; j < jTable.getColumnModel().getColumnCount(); j++) {
 			jTable.getColumnModel().getColumn(j).setCellRenderer(tableCellRenderer);
-//			jTable.getColumnModel().getColumn(j).sizeWidthToFit();
 		}
 		jTable.doLayout();
 	}
