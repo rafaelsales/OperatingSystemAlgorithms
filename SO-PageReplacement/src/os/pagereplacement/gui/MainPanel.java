@@ -47,13 +47,13 @@ public class MainPanel extends JPanel {
 		SETUP, READY, PLAY, END
 	}
 	
-	public static final String APPLICATION_TITLE = "Page Replacement";
+	public static final String APPLICATION_TITLE = "Operating System Page Replacement Algorithms Simulator";
 	private static final int ALGORITHMS_COUNT = 5;
 	
 	private JTextField jtfNumberOfFrames;
 	private JTextField jtfPlayStepInterval;
-	private JTextField jtfInsertedPage;
-	private JTextField jtfInsertedPageIndex;
+	private JTextField jtfRequestedPage;
+	private JTextField jtfRequestedPageIndex;
 	
 	private JToggleButton jbtSetup;
 	private JButton jbtDefineReferenceString;
@@ -62,6 +62,7 @@ public class MainPanel extends JPanel {
 	private JButton jbtPause;
 	private JButton jbtSingleStep;
 	private JButton jbtStop;
+	private JButton jbtInfo;
 	
 	private JScrollPane jspAlgorithms;
 	private List<AlgorithmPanel> algorithmsPanels;
@@ -131,12 +132,15 @@ public class MainPanel extends JPanel {
 			
 			jbtStop = new JButton("Stop");
 			jbtStop.addActionListener(buttonsActionListener);
+			
+			jbtInfo = new JButton("Info");
+			jbtInfo.setFont(jbtInfo.getFont().deriveFont(Font.BOLD));
+			jbtInfo.addActionListener(buttonsActionListener);
 		}
 
 		//Cria o panel dos campos:
 		JPanel jpnFields = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		{
-			jpnFields.setBorder(new EmptyBorder(0, 4, 0, 4));
 			jpnFields.add(jlbNumberOfFrames);
 			jpnFields.add(jtfNumberOfFrames);
 			jpnFields.add(new JSeparator(JSeparator.VERTICAL));
@@ -154,6 +158,7 @@ public class MainPanel extends JPanel {
 			jpnButtons.add(jbtPause);
 			jpnButtons.add(jbtSingleStep);
 			jpnButtons.add(jbtStop);
+			jpnButtons.add(jbtInfo);
 		}
 		
 		//Cria o panel do painel de controle que inclui o panel dos campos e dos botões:
@@ -169,24 +174,24 @@ public class MainPanel extends JPanel {
 	
 
 	private Component createStatusPanel() {
-		JLabel jlbInsertedPage = new JLabel("Inserted page:");
-		JLabel jlbInsertedPageIndex = new JLabel("Inserted page index:");
+		JLabel jlbRequestedPage = new JLabel("Requested page:");
+		JLabel jlbRequestedPageIndex = new JLabel("Requested page index:");
 		
-		jtfInsertedPage = new JTextField(5);
-		jtfInsertedPage.setEditable(false);
+		jtfRequestedPage = new JTextField(5);
+		jtfRequestedPage.setEditable(false);
 		
-		jtfInsertedPageIndex = new JTextField(5);
-		jtfInsertedPageIndex.setEditable(false);
+		jtfRequestedPageIndex = new JTextField(5);
+		jtfRequestedPageIndex.setEditable(false);
 		
 		//Criação dos campos de status:
-		JPanel jpnStatusFields = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
+		JPanel jpnStatusFields = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		{
 			jpnStatusFields.setBorder(new TitledBorder("Status"));
-			jpnStatusFields.add(jlbInsertedPage);
-			jpnStatusFields.add(jtfInsertedPage);
+			jpnStatusFields.add(jlbRequestedPage);
+			jpnStatusFields.add(jtfRequestedPage);
 			jpnStatusFields.add(new JSeparator(SwingConstants.VERTICAL));
-			jpnStatusFields.add(jlbInsertedPageIndex);
-			jpnStatusFields.add(jtfInsertedPageIndex);	
+			jpnStatusFields.add(jlbRequestedPageIndex);
+			jpnStatusFields.add(jtfRequestedPageIndex);	
 		}
 		
 		//Criação da tabela para exibição da cadeia de referencia de páginas	
@@ -383,8 +388,8 @@ public class MainPanel extends JPanel {
 
 	private void scrollJtbReferenceString() {
 		Rectangle cellRect = jtbReferenceString.getCellRect(0, currentPageIndex + 1, true);
-		cellRect.x -= cellRect.width;
-		cellRect.width *= 2;
+		cellRect.x = (int) (cellRect.getCenterX() - jtbReferenceString.getVisibleRect().getWidth() / 2);
+		cellRect.width = (int) (cellRect.getCenterX() + jtbReferenceString.getVisibleRect().getWidth() / 2);
 		jtbReferenceString.scrollRectToVisible(cellRect);
 		jtbReferenceString.repaint();
 	}
@@ -445,8 +450,8 @@ public class MainPanel extends JPanel {
 		if (currentPageIndex != null) {
 			currentPageIndexStr = currentPageIndex.toString();
 		}
-		jtfInsertedPage.setText(pageNumberStr);
-		jtfInsertedPageIndex.setText(currentPageIndexStr);
+		jtfRequestedPage.setText(pageNumberStr);
+		jtfRequestedPageIndex.setText(currentPageIndexStr);
 	}
 	
 	private List<ReplacementAlgorithm> createAlgorihtms() {
@@ -480,6 +485,12 @@ public class MainPanel extends JPanel {
 				doSingleStep();
 			} else if (jbtStop == e.getSource()) {
 				stop();
+			} else if (jbtInfo == e.getSource()) {
+				showMessageDialog(APPLICATION_TITLE + "\n" +
+						"Frame border color highlighting:\n" +
+						" - RED border: page replacement has occurred\n" +
+						" - BLUE border: requested page already in the frame\n" +
+						"Developer: Rafael de Castro Dantas Sales - rafaelcds@gmail.com\n", false);
 			}
 			enableDisableControls();
 		}
