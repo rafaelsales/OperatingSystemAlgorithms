@@ -62,7 +62,7 @@ public class MainPanel extends JPanel {
 	private JButton jbtPause;
 	private JButton jbtSingleStep;
 	private JButton jbtStop;
-	private JButton jbtInfo;
+	private JButton jbtHelp;
 	
 	private JScrollPane jspAlgorithms;
 	private List<AlgorithmPanel> algorithmsPanels;
@@ -89,6 +89,7 @@ public class MainPanel extends JPanel {
 		currentState = ExecutionState.SETUP;
 		jbtSetup.setSelected(true);
 		enableDisableControls();
+		showHelp();
 	}
 	
 	private void createComponents() {
@@ -133,9 +134,9 @@ public class MainPanel extends JPanel {
 			jbtStop = new JButton("Stop");
 			jbtStop.addActionListener(buttonsActionListener);
 			
-			jbtInfo = new JButton("Info");
-			jbtInfo.setFont(jbtInfo.getFont().deriveFont(Font.BOLD));
-			jbtInfo.addActionListener(buttonsActionListener);
+			jbtHelp = new JButton("Instructions");
+			jbtHelp.setFont(jbtHelp.getFont().deriveFont(Font.BOLD));
+			jbtHelp.addActionListener(buttonsActionListener);
 		}
 
 		//Cria o panel dos campos:
@@ -158,7 +159,7 @@ public class MainPanel extends JPanel {
 			jpnButtons.add(jbtPause);
 			jpnButtons.add(jbtSingleStep);
 			jpnButtons.add(jbtStop);
-			jpnButtons.add(jbtInfo);
+			jpnButtons.add(jbtHelp);
 		}
 		
 		//Cria o panel do painel de controle que inclui o panel dos campos e dos botões:
@@ -467,6 +468,22 @@ public class MainPanel extends JPanel {
 		return algorithms;
 	}
 	
+	private void showHelp() {
+		showMessageDialog(
+				"Instructions\n" +
+				"1) If you want to use a predefined reference string, click on the 'Set Reference String', \n" +
+				"otherwise click on 'Generate Reference String' to generate one with a given string size.\n" +
+				"2) Define the 'Number of frames'.\n" +
+				"3) Click on the 'Setup' button.\n" +
+				"4) Use the 'Play', 'Pause', '1 Step' and 'Stop' buttons to control the reference string reading.\n" +
+				"5) If you want to change or regenerate the reference string, click on the 'Setup' button and \n" +
+				"follow the instructions above.\n\n" +
+				"Frame border color highlighting:\n" +
+				" - RED: page replacement has occurred\n" +
+				" - BLUE: requested page was already in the highlighted frame\n\n" +
+				"Developer: Rafael de Castro Dantas Sales - rafaelcds@gmail.com", false);
+	}
+	
 	private ActionListener buttonsActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -488,12 +505,8 @@ public class MainPanel extends JPanel {
 				doSingleStep();
 			} else if (jbtStop == e.getSource()) {
 				stop();
-			} else if (jbtInfo == e.getSource()) {
-				showMessageDialog(APPLICATION_TITLE + "\n" +
-						"Frame border color highlighting:\n" +
-						" - RED border: page replacement has occurred\n" +
-						" - BLUE border: requested page already in the frame\n" +
-						"Developer: Rafael de Castro Dantas Sales - rafaelcds@gmail.com\n", false);
+			} else if (jbtHelp == e.getSource()) {
+				showHelp();
 			}
 			enableDisableControls();
 		}
