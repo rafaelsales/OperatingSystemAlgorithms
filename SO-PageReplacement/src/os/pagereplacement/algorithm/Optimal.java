@@ -1,6 +1,12 @@
 package os.pagereplacement.algorithm;
 
-
+/**
+ * Optimal: O algoritmo ótimo é o único que precisa ter acesso à cadeia de referencias de páginas para “prever” as páginas que serão
+ * solicitadas. Sua implementação consiste em substituir a página que será referenciada o mais adiante possível a partir da página corrente
+ * na cadeia.
+ * 
+ * @author Rafael Sales - rafaelcds@gmail.com
+ */
 public class Optimal extends ReplacementAlgorithm {
 
 	private final int[] pageReferenceString;

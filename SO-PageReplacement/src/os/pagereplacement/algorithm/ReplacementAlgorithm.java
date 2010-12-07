@@ -2,6 +2,13 @@ package os.pagereplacement.algorithm;
 
 import java.util.Arrays;
 
+/**
+ * A implementação de todos os algoritmos possui uma base em comum: o acesso aos frames de memória e a solicitação de página que não gera
+ * page fault. A implementação deste tipo de solicitação é simples: quando uma página já está em um frame, não há page fault, caso
+ * contrário, se houver frame livre a página solicitada pode ser inserida sem a necessidade de eleger uma página para substituição.
+ * 
+ * @author Rafael Sales - rafaelcds@gmail.com
+ */
 public abstract class ReplacementAlgorithm {
 
 	public static final int EMPTY_FRAME_VALUE = -1;
@@ -35,7 +42,7 @@ public abstract class ReplacementAlgorithm {
 	public abstract int insert(int pageNumber);
 
 	/**
-	 * Se a página ainda não estiver em um frame, incrementa o número de page 
+	 * Se a página ainda não estiver em um frame, incrementa a quantidade de page 
 	 * faults e tenta inserir a página em um frame vazio, se houver
 	 * 
 	 * @param pageNumber

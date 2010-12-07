@@ -2,6 +2,14 @@ package os.pagereplacement.algorithm;
 
 import java.util.Stack;
 
+/**
+ * LRU (Least Recently Used): O algoritmo utiliza uma estrutura de pilha para deixar as páginas mais recentemente referenciadas próximas do
+ * topo da pilha. Sempre que uma página é solicitada e já está no vetor de frames, esta é movida de sua posição atual na pilha para o topo
+ * dela. Quando a página solicitada não está em um frame, a página elegida para substituição é a que está na base da pilha, a qual é
+ * removida dela, e então a página solicitada é adicionada no topo da pilha.
+ * 
+ * @author Rafael Sales - rafaelcds@gmail.com
+ */
 public class LRU extends ReplacementAlgorithm {
 
 	private Stack<Integer> framesIndexesStack;
