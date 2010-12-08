@@ -18,22 +18,32 @@ import os.pagereplacement.algorithm.ReplacementAlgorithm;
 
 public class Test {
 	public static void main(String[] args) {
-		PageGenerator pageGenerator = new PageGenerator(new Integer(args[0]).intValue());
+		int referenceStringSize;
+		int framesCount;
+		try {
+			referenceStringSize = Integer.parseInt(args[0]);
+			framesCount = Integer.parseInt(args[1]);
+		} catch (Exception e) {		
+			System.out.println("Argumentos inválidos.");
+			System.out.println("1o argumento: tamanho da cadeia de referências");
+			System.out.println("2o argumento: quantidade de frames de memória");
+			return;
+		}
+		System.out.println("Tamanho da cadeia de referencias: " + referenceStringSize);
+		System.out.println("Quantidade de frames: " + framesCount);
+		System.out.println();
+		
+		PageGenerator pageGenerator = new PageGenerator(referenceStringSize);
 
 		int[] referenceString = pageGenerator.getReferenceString();
 
 		List<ReplacementAlgorithm> replacementAlgorithms = new ArrayList<ReplacementAlgorithm>();
 		/** Use either the FIFO or LRU algorithms */
-		ReplacementAlgorithm fifo = new FIFO(new Integer(args[1]).intValue());
-		ReplacementAlgorithm lru = new LRU(new Integer(args[1]).intValue());
-		ReplacementAlgorithm lfu = new LFU(new Integer(args[1]).intValue());
-		ReplacementAlgorithm mfu = new MFU(new Integer(args[1]).intValue());
-		ReplacementAlgorithm optimal = new Optimal(new Integer(args[1]).intValue(), referenceString);
-		replacementAlgorithms.add(fifo);
-		replacementAlgorithms.add(lru);
-		replacementAlgorithms.add(lfu);
-		replacementAlgorithms.add(mfu);
-		replacementAlgorithms.add(optimal);
+		replacementAlgorithms.add(new FIFO(framesCount));
+		replacementAlgorithms.add(new LRU(framesCount));
+		replacementAlgorithms.add(new LFU(framesCount));
+		replacementAlgorithms.add(new MFU(framesCount));
+		replacementAlgorithms.add(new Optimal(framesCount, referenceString));
 
 		for (int i = 0; i < referenceString.length; i++) {
 			for (ReplacementAlgorithm replacementAlgorithm : replacementAlgorithms) {
@@ -46,10 +56,8 @@ public class Test {
 		}
 
 		// report the total number of page faults
-		System.out.println("LRU faults = " + lru.getPageFaultCount());
-		System.out.println("FIFO faults = " + fifo.getPageFaultCount());
-		System.out.println("LFU faults = " + lfu.getPageFaultCount());
-		System.out.println("MFU faults = " + mfu.getPageFaultCount());
-		System.out.println("OPTIMAL faults = " + optimal.getPageFaultCount());
+		for (ReplacementAlgorithm algorithm : replacementAlgorithms) {
+			System.out.println(String.format("Quantidade de page faults do %s: %d", algorithm.getName(), algorithm.getPageFaultCount()));
+		}
 	}
 }

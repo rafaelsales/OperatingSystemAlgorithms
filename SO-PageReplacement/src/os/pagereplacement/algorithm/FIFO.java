@@ -2,7 +2,7 @@ package os.pagereplacement.algorithm;
 
 /**
  * FIFO (First In, First Out): A implementação consiste apenas em armazenar um inteiro que indica o índice da “cabeça” da fila. Com o uso
- * deste índice simulamos uma fila circular no próprio vetor de frames. A página elegida para substiruição é a que está no frame da “cabeça”
+ * deste índice simulamos uma fila circular no próprio vetor de frames. A página elegida para substituição é a que está no frame da “cabeça”
  * da fila. Então o índice da cabeça da fila é atualizado para (índice_cabeca + 1) mod |vetor_frames|.
  * 
  * @author Rafael Sales - rafaelcds@gmail.com

@@ -10,19 +10,8 @@ import os.pagereplacement.PageGenerator;
 public class MainFrame extends JFrame {
 	
 	public static void main(String[] args) {
-		int referenceStringSize;
-		int frameSize;
-		try {
-			referenceStringSize = Integer.parseInt(args[0]);
-			frameSize = Integer.parseInt(args[1]);
-		} catch (Exception e) {
-			referenceStringSize = PageGenerator.DEFAULT_SIZE;
-			frameSize = 100;
-			System.out.println("Parâmetros inválidos. Utilizando parâmetros padrões: " + referenceStringSize + " " + frameSize);
-		}
-		
-		final int referenceStringSizeFinal = referenceStringSize;
-		final int frameSizeFinal = frameSize;
+		final int referenceStringSizeFinal = PageGenerator.DEFAULT_SIZE;
+		final int frameSizeFinal = 100;
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			SwingUtilities.invokeAndWait(new Runnable() {
