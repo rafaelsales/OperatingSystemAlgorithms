@@ -1,0 +1,16 @@
+#Process Name;CPU TIME;PROCESS TYPE;PROCESS PRIORITY
+chrome.exe;1000;interactive;20
+chrome1.exe;1000;interactive;21
+chrome2.exe;1000;interactive;22
+chrome3.exe;1000;interactive;23
+chrome4.exe;1000;interactive;24
+chrome5.exe;1000;interactive;25
+chrome6.exe;1000;interactive;26
+chrome7.exe;1000;interactive;27
+chrome8.exe;1000;interactive;28
+chrome9.exe;1000;interactive;29
+chrome10.exe;1000;interactive;30
+chrome11.exe;1000;interactive;31
+firefox.exe;1500;batch;1
+office.bin;100;system;2
+eclipse.exe;200;system;7

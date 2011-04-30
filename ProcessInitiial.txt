@@ -1,0 +1,12 @@
+#Process Name;CPU TIME;PROCESS TYPE;PROCESS PRIORITY
+chrome.exe;10;system;10
+firefox.exe;15;background;1
+office.bin;5;batch;2
+eclipse.exe;1;interactive;7
+explorer.exe;19;batch;5
+beans.exe;5;batch;3
+word.exe;9;interactive;1
+virus.bin;19;background;4
+keylogger.exe;7;system;7
+norton.exe;9;background;8
+avast.exe;1;batch;9
